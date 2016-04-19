@@ -1,0 +1,2 @@
+0	1.000	degree (7) players (5) game (5) demo (5) modes (5) styles (4) weapon (4) 
+0	1.0
