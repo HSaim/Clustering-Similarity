@@ -8,7 +8,8 @@ SOM algorithm is applied to cluster methods. Method tags are given to find the c
 # KMeans Project:
 The same work is done here as done in SOM project but the algorithm is KMeans
 
-# Comparison of KMeans and SOM
+Comparison of KMeans and SOM:
+
 Both algos give satisfactory results.
 
 # WS4JSimilarityCalculation Project:
@@ -44,6 +45,8 @@ Instructions for WS4JSimilarityCalculation:
 
 
 3. 'SimilarityCalculation.java' is the starting point of execution of the project. Two words are hard coded in the main() function to find the similarity.
+
+
 
 
 
