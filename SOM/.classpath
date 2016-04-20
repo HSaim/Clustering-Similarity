@@ -18,5 +18,8 @@
 	<classpathentry kind="lib" path="lib/trove-2.0.2.jar"/>
 	<classpathentry kind="lib" path="dist/mallet-deps.jar"/>
 	<classpathentry kind="lib" path="dist/mallet.jar"/>
+	<classpathentry kind="lib" path="lib/jawjaw-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jaws-bin.jar"/>
+	<classpathentry kind="lib" path="lib/ws4j-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
