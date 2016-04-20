@@ -13,6 +13,7 @@ public class MethodTagsCreation {
 	private static final double MIN_SIMILARITY_SCORE = 0.5;
 	private List<List<String>> methodsTagsOriginal = new ArrayList<List<String>>();
 	private List<List<String>> methodsTagsStemmed = new ArrayList<List<String>>();
+	private List<List<String>> methodsTagsConvetred = new ArrayList<List<String>>();
 	//List<List<String>> methodsTagsStmdSyn = new ArrayList<List<String>>();
 	//String inputFile = System.getProperty("user.dir")+"/SEWordSim-r1.db";   //This path is useful when db is in SOM folder
 	String inputFile = "D:/CRP/SEWordSimDB/SEWordSim-r1.db";
@@ -353,6 +354,44 @@ public class MethodTagsCreation {
 		}
 		
 	}
+	
+private void replaceSimilarTags(){
+		
+		methodsTagsConverted  = new ArrayList<List<String>>(methodsTagsOriginal);
+		double similarityScore;
+		
+		for (int i=0; i<methodsTagsStemmed.size(); i++){
+			List<String> tags1 = methodsTagsStemmed.get(i);
+			//System.out.println("Methd for comparison\n" + tags1);
+			for (int j=0; j<tags1.size(); j++){
+				String tag = tags1.get(j);
+				if(facade.isInDatabase(tag)){
+					//System.out.println(tag+ " is in DB");
+					for (int k=i+1; k<methodsTagsStemmed.size(); k++){
+						List<String> tags2 = methodsTagsStemmed.get(k);
+						//System.out.println("Method "+ k + " for syn removal\n" + tags2);
+						for(int l=0; l<tags2.size(); l++){
+							//System.out.println("Tag before replace: " + tags2.get(l));
+							if (!tag.equals(tags2.get(l))){
+								similarityScore = facade.computeSimilarity(tag, tags2.get(l));
+								if (similarityScore>=MIN_SIMILARITY_SCORE){
+									System.out.println("\nIn method: " + i + " & method: " +k);
+									System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) + ", Sim. Score: " + similarityScore);
+									tags2.set(l, tag);	
+									//System.out.println("Tag after replace: " + tags2.get(l));
+									break;
+								}
+							}
+						}
+						methodsTagsStemmed.set(k, tags2);
+						//System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsStemmed.get(k));
+					}
+				}
+			}
+		}
+		
+	}
+
 	public List<List<String>> getOriginalMethodsTags(){
 		return methodsTagsOriginal;
 	}
