@@ -75,26 +75,30 @@ public class SimilarityCalculation {
 	 * Calculates similarity between word1 and word2
 	 * 
 	 */
-	private void calculate(String word1, String word2){		
+	public double computeSimilarity(String word1, String word2){		
 				
         String baseWord1, baseWord2;
         boolean wordFound;
+        double score = -1;
         
 		//Similarity Calculation on original words
 		System.out.println("Similarity calculation on original words");
 		System.out.println("---------------------------------------");
 		System.out.println("Original Words: " + word1 + ", "+word2);
-		findSimilarity(word1, word2);
+		score = findSimilarity(word1, word2);
 		System.out.println("");		
 		
 		//Similarity calculation after converting morphological words to their base
+		baseWord1 = morph.getBaseWord(word1);
+		baseWord2 = morph.getBaseWord(word2);
+		
 		
 		//Check if word1 does not exist in WordNet, then convert it into base word  
 		//Use WS4J API to check whether a word is in WordNet DB or not
 		//wordFound = isInWordNet(word1);  
 		
 		//Use JAWS API to check whether a word is in WordNet DB or not
-		wordFound = morph.isInWordNet(word1);
+	/*	wordFound = morph.isInWordNet(word1);
 		if (!wordFound)
 			baseWord1 = morph.getBaseWord(word1);
 		else
@@ -108,13 +112,15 @@ public class SimilarityCalculation {
 		if (!wordFound)
 			baseWord2 = morph.getBaseWord(word2);
 		else
-			baseWord2 = word2;
+			baseWord2 = word2;*/
 		
 		System.out.println("Similarity calculation on base words");
 		System.out.println("---------------------------------------");
 		System.out.println("Inflectional Morphological Words: " + word1 + ", "+word2);
 		System.out.println("Base Words: " + baseWord1 + ", "+baseWord2);
-		findSimilarity(baseWord1, baseWord2);
+		score = findSimilarity(baseWord1, baseWord2);
+		
+		return score;
 		
 	}
 		/**
@@ -145,7 +151,7 @@ public class SimilarityCalculation {
 	 * While calculating the relatedness,
 	 *  it gets the score of relatedness and stores the highest score in the variable maxScore
 	 */
-	private static void findSimilarity(String word1, String word2){
+	private static double findSimilarity(String word1, String word2){
 		
 		WS4JConfiguration.getInstance().setMFS(true);
 		List<POS[]> posPairs = wup.getPOSPairs();
@@ -171,6 +177,7 @@ public class SimilarityCalculation {
 		}
 
 		System.out.println("sim('" + word1 + "', '" + word2 + "') =  " + maxScore);
+		return maxScore;
 	}
 	
 	private boolean isInWordNet(String word){

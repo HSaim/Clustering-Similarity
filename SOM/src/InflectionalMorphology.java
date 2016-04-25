@@ -37,7 +37,8 @@ public class InflectionalMorphology {
 		boolean flag = true;
 		Synset[] synsets = database.getSynsets(word);
 		
-		if (synsets.length > 0){		
+		if (synsets.length > 0){	
+			
 			System.out.println("The following synsets contain '" +
 					word + "' or a possible base form " + 	"of that text:");
 			System.out.println("----------------------------------------------------------");
@@ -48,7 +49,8 @@ public class InflectionalMorphology {
 				for (int j = 0; j < wordForms.length; j++){
 					System.out.print((j > 0 ? ", " : "") + wordForms[j]);							
 				}
-				System.out.println(": " + synsets[i].getDefinition());
+				//System.out.println(": " + synsets[i].getDefinition());
+				System.out.println();
 			}
 			flag = true;
 		}		

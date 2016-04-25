@@ -149,21 +149,33 @@ public class JaccardDifference {
     private void initializeNeurons(){		
 
 		//In 'neurons' arraylist place maximum distance nodes 
-		for (int i=0; i<maxDist.length; i++){
+    	
+    	//Temporarily commnented to test another logic
+		
+    	for (int i=0; i<maxDist.length; i++){
 			maxDistVal[i] = dist[i][maxDist[i]];
-			if (dist[i][maxDist[i]]>=1.0){
+			if (dist[i][maxDist[i]]>=0.8){
 				neuronsList.add(maxDist[i]);
 			}
 		}
 		
 		addMissingNeurons();
 		
+    	//Another logic for filling neuron list
+    	/*for (int i=0; i<totalMethods; i++){
+    		for (int j=i+1; j<totalMethods; j++){
+    			if (dist[i][j]>=0.9){
+    				neuronsList.add(i);
+    			}
+    		}
+    	}*/
+    		
 		//If all methods are related then they will group in one cluster
 		if (neuronsList.size() == 0){
 			neuronsList.add(0);			
 		}
 		
-		//System.out.println("\nNeurons list with duplication: " + neuronsList);
+		System.out.println("\nNeurons list with duplication: " + neuronsList);
 		
 		//Duplication removal from initial neurons list
 		neuronsList = new ArrayList<Integer>(new LinkedHashSet<Integer>(neuronsList));
@@ -197,15 +209,20 @@ public class JaccardDifference {
 	 private void removeCloseNeuronNumbers(){
 	    	
     	List<Integer> removelList = new ArrayList<Integer>();
-    	
+    	System.out.println("Distance list of close neurons");
     	for (int i=0; i<neuronsList.size(); i++){
-    		for (int j=i+1; j<neuronsList.size(); j++){
-    			int x=neuronsList.get(j);
-    			if (!removelList.contains(x)){
-	    			if (dist[neuronsList.get(i)][neuronsList.get(j)]<0.9){
-	    				removelList.add(neuronsList.get(j));    				
+    		int y=neuronsList.get(i);{
+    		if (!removelList.contains(y))
+	    		for (int j=i+1; j<neuronsList.size(); j++){
+	    			int x=neuronsList.get(j);
+	    			
+	    			if (!removelList.contains(x)){
+		    			if (dist[neuronsList.get(i)][neuronsList.get(j)]<0.9){
+		    				System.out.println("Dist of '" + neuronsList.get(i) + "' & '" + neuronsList.get(j) + "' : " + dist[neuronsList.get(i)][neuronsList.get(j)]);
+		    				removelList.add(neuronsList.get(j));    				
+		    			}
 	    			}
-    			}
+	    		}
     		}
     	}
     	
