@@ -19,7 +19,8 @@ public class KMeansMain {
 	private List<Cluster> clusters;							//Clusters
 	int totalClusters;
 	int centroidSize;										//No. of elements in the centroid of cluster = no. of elements in a method
-	List<List<String>> methodsTagsStemmed;					//Stemmed methods to be clustered 
+	//List<List<String>> methodsTagsStemmed;					//Stemmed methods to be clustered 
+	List<List<String>> methodsTags;							//Methods to be clustered
 	List<List<Double>> methodsVector;						//Methods in the form of 0 and 1
 	List<String> featureVector;								//All possible tags/features in all methods
 	List<Integer> centroidList;								//Method numbers to be initial centroids
@@ -32,7 +33,8 @@ public class KMeansMain {
 	public KMeansMain(){		
 		
 		this.clusters = new ArrayList<Cluster>(); 
-		this.methodsTagsStemmed = new ArrayList<List<String>>();
+		//this.methodsTagsStemmed = new ArrayList<List<String>>();
+		this.methodsTags = new ArrayList<List<String>>();
 		this.methodsVector = new ArrayList<List<Double>>();
 		this.featureVector = new ArrayList<String>();
 		this.centroidList = new ArrayList<Integer>();
@@ -53,14 +55,14 @@ public class KMeansMain {
     private void init() {
     	
     	mTag.populateMethodTagsList();
-		methodsTagsStemmed = mTag.getStemmedMethodsTags();
-		 //methodsTagsOriginal = mTag.getOriginalMethodsTags();
-		jD = new JaccardDifference(methodsTagsStemmed);
+		//methodsTags = mTag.getStemmedMethodsTags();
+		 methodsTags = mTag.getOriginalMethodsTags();
+		jD = new JaccardDifference(methodsTags);
 		centroidList = jD.getCentroidList();
 		totalClusters = centroidList.size();
 		
 		//Population of Feature Vector
-		 for (List<String> tags: methodsTagsStemmed){
+		 for (List<String> tags: methodsTags){
 			 featureVector.addAll(tags);
 		 }
 		 	
@@ -72,7 +74,7 @@ public class KMeansMain {
 		 centroidSize =  featureVector.size();
 		
 		 // Methods in the form of 0 and 1 
-		 methodsVector = mVec.populateMethodVector(methodsTagsStemmed, featureVector);
+		 methodsVector = mVec.populateMethodVector(methodsTags, featureVector);
     	
 		 //Create initial clusters with random centroids values
 		 /*for (int i=0; i<totalClusters; i++){

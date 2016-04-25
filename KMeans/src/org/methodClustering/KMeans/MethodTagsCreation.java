@@ -247,6 +247,46 @@ public class MethodTagsCreation {
 		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
 		*/
 		 
+		 /******************
+		  * Method Updates after having more meaningful tags relevant to 3 domains including synonyms and morphological words
+		  * but methods of different domains are mixed up. Its 7th one. Just methods sequence is changed
+		  * 	*****************/
+		/***** 10th methodsTags ArrayList **********/
+		/*
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisites", "requirements", "financial","aid", "test", "schedule", "degree","faqs", "admissions", "programs"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("documents", "admission", "applications", "form", "dates", "eligibility","qualification", "programs", "policies", "options"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "timetable", "degree", "apply", "online", "required", "sat1", "transfer", "admissions"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","updates", "selections", "options", "mobile" ));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "name", "updates", "software", "platform"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("file", "office", "software", "department", "instructions",  "profit", "loss"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "software", "platform", "faqs"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "utilities", "software", "process", "smart", "Phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("sat1", "programes", "process", "admissions", "aid", "entry", "test", "apply","transfer", "executive", "nop"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "objects", "weapons", "play"));
+		 		 			 
+		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","objects", "play", "level", "Utilities"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "faqs", "structure", "dates", "tuition"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "file", "review", "refund", "statement", "wage", "offices", "website", "income"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("admissions","pay", "online", "registeration", "modes", "website", "test", "criteria", "faqs","transfer", "executive", "nop", "phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
+		 */
 		 stemMethodsTags();
 		 //return methodsTagsOriginal;
 		 //return methodsTagsStemmed;
