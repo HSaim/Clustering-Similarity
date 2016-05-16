@@ -3,6 +3,7 @@
 
 package org.methodClustering.KMeans;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,20 +12,23 @@ import java.util.List;
  * 
  * @author Habiba Saim
  * This class populates method vector
- * Then stems them
- * And handles if any synonyms exist 
+ * Then convert the morphological words into their base words
+ * And replaces all synonyms by one word 
  *
  */
 
 public class MethodTagsCreation {
 	
-	private static final double MIN_SIMILARITY_SCORE = 0.7;
+	private static final double MIN_SIMILARITY_SCORE = 0.9;
 	private List<List<String>> methodsTagsOriginal = new ArrayList<List<String>>();
+	private List<List<String>> methodsTagsLowerCase;
 	private List<List<String>> methodsTagsStemmed = new ArrayList<List<String>>();
+	private List<List<String>> methodsTagsConverted;
 	//List<List<String>> methodsTagsStmdSyn = new ArrayList<List<String>>();
 	//String inputFile = System.getProperty("user.dir")+"/SEWordSim-r1.db";   //This path is useful when db is in SOM folder
 	String inputFile = "D:/CRP/SEWordSimDB/SEWordSim-r1.db";
 	WordSimFinder facade = new WordSimFinder(inputFile);
+	SimilarityCalculation sc = new SimilarityCalculation();	
 				
 	//Create arraylist of recommended methods with their tags 
 	public void populateMethodTagsList(){
@@ -101,7 +105,7 @@ public class MethodTagsCreation {
 		*/
 		 /********** More Updations with single words tags *********/
 		/***** 5th methodsTags ArrayList **********/
-		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		/* methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
 		 
 		 methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "Tution"));
 		
@@ -126,7 +130,7 @@ public class MethodTagsCreation {
 		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "3D", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
 		
 		 methodsTagsOriginal.add(Arrays.asList("pay", "online", "registeration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
-		 
+		 */
 		
 		/******************Method Updates after having more meaningful tags relevant to domains*****************/
 		/***** 6th methodsTags ArrayList **********/
@@ -287,17 +291,76 @@ public class MethodTagsCreation {
 		 
 		 methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
 		 */
-		 stemMethodsTags();
-		 //return methodsTagsOriginal;
-		 //return methodsTagsStemmed;
+		 /******************
+		  * Method Updates after having more meaningful tags relevant to 3 domains including synonyms and morphological words
+		  * but methods of different domains are mixed up. Its 7th one. Just methods sequence is changed
+		  * 	*****************/
+		/***** 10th methodsTags ArrayList **********/
+		
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisites", "requirements", "financial","aid", "test", "schedule", "degree","faqs", "admissions", "programs"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("documents", "admission", "applications", "form", "dates", "eligibility","qualification", "programs", "policies", "options"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "timetable", "degree", "apply", "online", "required", "sat1", "transfer", "admissions"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","updates", "selections", "options", "mobile" ));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "name", "updates", "software", "platform"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("file", "office", "software", "department", "instructions",  "profit", "loss"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "software", "platform", "faqs"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "utilities", "software", "process", "smart", "Phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("sat1", "programes", "process", "admissions", "aid", "entry", "test", "apply","transfer", "executive", "nop"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "objects", "weapons", "play"));
+		 		 			 
+		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","objects", "play", "level", "Utilities"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "faqs", "structure", "dates", "tuition"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "file", "review", "refund", "statement", "wage", "offices", "website", "income"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("admissions","pay", "online", "registeration", "modes", "website", "test", "criteria", "faqs","transfer", "executive", "nop", "phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
+	
+		 // stemMethodsTags();
+		 convertInLowecase();
+		replaceSimilarTags();
+		
+		System.out.println("\n\tOriginal Methods Tags in lower case: ");
+		System.out.println("---------------------------------------");
+		displayMethods( methodsTagsLowerCase);
+		
+		System.out.println("\n\tUpdated Methods Tags after removal of morphological words");
+		System.out.println("------------------------------------------------------------------------------");
+		displayMethods(methodsTagsConverted);
+		
 	}
 	
+	//Convert all tags in lower case
+	private void convertInLowecase(){
+		
+		methodsTagsLowerCase  = new ArrayList<List<String>>();
+		
+		for (int i=0; i<methodsTagsOriginal.size(); i++){
+			String []arr =methodsTagsOriginal.get(i).toArray(new String[methodsTagsOriginal.get(i).size()]);
+			methodsTagsLowerCase.add(Arrays.asList(arr));
+		}
+	}
 	//Stem methods tags
 	//Store them in a new arraylist methodsTagsStemmed
 	private void stemMethodsTags(){
 				
-		for (int i=0; i<methodsTagsOriginal.size(); i++){
-			List<String> tags= methodsTagsOriginal.get(i);
+		for (int i=0; i<methodsTagsLowerCase.size(); i++){
+			List<String> tags= methodsTagsLowerCase.get(i);
 			List<String> stemmedTags = new ArrayList<String>();
 			for(int j=0; j<tags.size(); j++){
 				//String tag =tags.get(j).toLowerCase() ;
@@ -359,6 +422,48 @@ public class MethodTagsCreation {
 		
 	}
 	
+	private void replaceSimilarTags(){
+		
+		methodsTagsConverted  = new ArrayList<List<String>>();
+			
+		for (int i=0; i<methodsTagsLowerCase.size(); i++){
+			String []arr =methodsTagsLowerCase.get(i).toArray(new String[methodsTagsLowerCase.get(i).size()]);
+			methodsTagsConverted.add(Arrays.asList(arr));
+		}
+		 
+
+			double similarityScore;
+			
+			for (int i=0; i<methodsTagsConverted.size(); i++){
+				List<String> tags1 = methodsTagsConverted.get(i);
+				//System.out.println("Methd for comparison\n" + tags1);
+				for (int j=0; j<tags1.size(); j++){
+					String tag = tags1.get(j);
+						for (int k=i+1; k<methodsTagsConverted.size(); k++){
+							List<String> tags2 = methodsTagsConverted.get(k);
+							//System.out.println("Method "+ k + " for syn removal\n" + tags2);
+							for(int l=0; l<tags2.size(); l++){
+								//System.out.println("Tag before replace: " + tags2.get(l));
+								if (!tag.equals(tags2.get(l))){
+									similarityScore = sc.computeSimilarity(tag, tags2.get(l));
+									if (similarityScore>=MIN_SIMILARITY_SCORE){
+										System.out.println("\nIn method: " + i + " & method: " +k);
+										System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) + ", Sim. Score: " + similarityScore);
+										tags2.set(l, tag);	
+										//System.out.println("Tag after replace: " + tags2.get(l));
+										break;
+									}
+								}
+							}
+							methodsTagsConverted.set(k, tags2);
+							//System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsStemmed.get(k));
+						}
+					//}
+				}
+			}
+			
+		}
+
 	public List<List<String>> getOriginalMethodsTags(){
 		return methodsTagsOriginal;
 	}
@@ -366,5 +471,19 @@ public class MethodTagsCreation {
 	public List<List<String>> getStemmedMethodsTags(){
 		return methodsTagsStemmed;
 	}
-
+	
+	public List<List<String>> getConvertedMethodsTags(){
+		return methodsTagsConverted;
+	}
+	
+	public List<List<String>> getLowerCaseMethodsTags(){
+		return methodsTagsLowerCase;
+	}
+	
+	private void displayMethods(List<List<String>> methods){		
+		
+		for(int i=0; i<methods.size(); i++){
+			System.out.println(methods.get(i));
+		}
+	}
 }

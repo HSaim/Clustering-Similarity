@@ -72,7 +72,7 @@ public class JaccardDifference {
 			}
 			System.out.println();
 		}
-		initializeNeurons();
+		initializeNeuronsList();
 		System.out.println();
 		for(int i=0; i<maxDist.length; i++){
 			System.out.println("max distant node of  node " +i+": "+ maxDist[i] + " value: " + maxDistVal[i]);
@@ -99,7 +99,7 @@ public class JaccardDifference {
 		 List<String> intersections = new ArrayList<String>();
 		 double similarity;
 		unions = findUnion(list1, list2);
-		/* System.out.print("Union: ");
+		 /*System.out.print("Union: ");
 		 for (int i=0; i<unions.size(); i++){
 			 System.out.print(unions.get(i) + '\t');
 		 }
@@ -107,7 +107,7 @@ public class JaccardDifference {
 			 
 		// Intersection of 1st two methods	 
 		 intersections = findIntersection(list1, list2);
-		 /*System.out.print("Intersection: ");
+		/* System.out.print("Intersection: ");
 		 for (int i=0; i<intersections.size(); i++){
 			 System.out.print(intersections.get(i) + '\t');
 		 }
@@ -136,7 +136,10 @@ public class JaccardDifference {
                 list.add(t);
             }
         }
-
+        
+        //Duplication removal from intersection arraylist
+        list = new ArrayList<T>(new LinkedHashSet<T>(list));
+        
         return list;
     }
     
@@ -146,19 +149,28 @@ public class JaccardDifference {
     	return intersectionCount/unionCount;
     }
     
-    private void initializeNeurons(){		
+    private void initializeNeuronsList(){		
 
-		//In 'neurons' arraylist place maximum distance nodes 
-    	
-    	//Temporarily commnented to test another logic
+		//In 'neurons' arraylist place maximum distance nodes  	
 		
+    	/**** Blocked to check the working of logic written next to this block ********//*
     	for (int i=0; i<maxDist.length; i++){
 			maxDistVal[i] = dist[i][maxDist[i]];
 			if (dist[i][maxDist[i]]>=0.8){
 				neuronsList.add(maxDist[i]);
 			}
-		}
+		}*/
 		
+    	
+    	/******** Testing initialization 28-04-2016 ********/
+    	for (int i=0; i<dist.length; i++){
+    		for (int j=0; j<dist[i].length; j++){
+    			if (dist[i][j]>=0.8){
+    				neuronsList.add(j);
+    			}
+    		}
+    	}
+    	
 		addMissingNeurons();
 		
     	//Another logic for filling neuron list
@@ -197,6 +209,7 @@ public class JaccardDifference {
 			for (int j=0; j<totalMethods; j++){
 				if (dist[i][j]!=0.0 && dist[i][j]!=1.0 && dist[i][j]!=2.0){
 					count++;
+					//break;
 				}
 			}
 			if(count == 0){

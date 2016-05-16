@@ -19,10 +19,10 @@ public class KMeansMain {
 	private List<Cluster> clusters;							//Clusters
 	int totalClusters;
 	int centroidSize;										//No. of elements in the centroid of cluster = no. of elements in a method
-	//List<List<String>> methodsTagsStemmed;					//Stemmed methods to be clustered 
+	//List<List<String>> methodsTagsStemmed;				//Stemmed methods to be clustered 
 	List<List<String>> methodsTags;							//Methods to be clustered
 	List<List<Double>> methodsVector;						//Methods in the form of 0 and 1
-	List<String> featureVector;								//All possible tags/features in all methods
+	List<String> featureVector;								//Union of methods tags/features
 	List<Integer> centroidList;								//Method numbers to be initial centroids
 	MethodVectorCreation mVec;
 	MethodTagsCreation mTag;
@@ -57,6 +57,7 @@ public class KMeansMain {
     	mTag.populateMethodTagsList();
 		//methodsTags = mTag.getStemmedMethodsTags();
 		 methodsTags = mTag.getOriginalMethodsTags();
+		// methodsTags = mTag.getConvertedMethodsTags();
 		jD = new JaccardDifference(methodsTags);
 		centroidList = jD.getCentroidList();
 		totalClusters = centroidList.size();

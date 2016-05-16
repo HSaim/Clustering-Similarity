@@ -80,17 +80,19 @@ public class SimilarityCalculation {
         String baseWord1, baseWord2;
         boolean wordFound;
         double score = -1;
+        double score1 = -1;
+        double score2 = -1;
         
 		//Similarity Calculation on original words
-		System.out.println("Similarity calculation on original words");
+		/*System.out.println("Similarity calculation on original words");
 		System.out.println("---------------------------------------");
-		System.out.println("Original Words: " + word1 + ", "+word2);
-		score = findSimilarity(word1, word2);
-		System.out.println("");		
+		System.out.println("Original Words: " + word1 + ", "+word2);*/
+		score1 = findSimilarity(word1, word2);
+		//System.out.println("");		
 		
 		//Similarity calculation after converting morphological words to their base
-		baseWord1 = morph.getBaseWord(word1);
-		baseWord2 = morph.getBaseWord(word2);
+		//baseWord1 = morph.getBaseWord(word1);
+		//baseWord2 = morph.getBaseWord(word2);
 		
 		
 		//Check if word1 does not exist in WordNet, then convert it into base word  
@@ -98,7 +100,7 @@ public class SimilarityCalculation {
 		//wordFound = isInWordNet(word1);  
 		
 		//Use JAWS API to check whether a word is in WordNet DB or not
-	/*	wordFound = morph.isInWordNet(word1);
+		wordFound = morph.isInWordNet(word1);
 		if (!wordFound)
 			baseWord1 = morph.getBaseWord(word1);
 		else
@@ -112,13 +114,20 @@ public class SimilarityCalculation {
 		if (!wordFound)
 			baseWord2 = morph.getBaseWord(word2);
 		else
-			baseWord2 = word2;*/
+			baseWord2 = word2;
 		
-		System.out.println("Similarity calculation on base words");
+		/*System.out.println("Similarity calculation on base words");
 		System.out.println("---------------------------------------");
 		System.out.println("Inflectional Morphological Words: " + word1 + ", "+word2);
-		System.out.println("Base Words: " + baseWord1 + ", "+baseWord2);
-		score = findSimilarity(baseWord1, baseWord2);
+		System.out.println("Base Words: " + baseWord1 + ", "+baseWord2);*/
+		score2 = findSimilarity(baseWord1, baseWord2);
+		
+		if (score1>score2){
+			score = score1;
+		}
+		else{
+			score = score2;
+		}
 		
 		return score;
 		
@@ -176,7 +185,7 @@ public class SimilarityCalculation {
 		    maxScore = 0.0;
 		}
 
-		System.out.println("sim('" + word1 + "', '" + word2 + "') =  " + maxScore);
+		//System.out.println("sim('" + word1 + "', '" + word2 + "') =  " + maxScore);
 		return maxScore;
 	}
 	
@@ -199,15 +208,4 @@ public class SimilarityCalculation {
 		return flag;		
 	}
 
-	/*public static void main(String[] args) {
-		
-		SimilarityCalculation sc = new SimilarityCalculation();
-		
-		String word1 = "entrance";
-        String word2 = "admission";
-		
-		sc.calculate(word1, word2);
-		//sc.compute("play", "playing");
-		
-	}*/
 }

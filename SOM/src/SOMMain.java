@@ -7,7 +7,7 @@ import java.util.List;
 public class SOMMain {
 	
 	//public static final int MAX_CLUSTERS = 6;
-	public static final double DECAY_RATE = 0.8;
+	public static final double DECAY_RATE = 0.9;
 	public static final double MIN_ALPHA = 0.01;
 	private double alpha;
 	private int maxClusters;
@@ -46,11 +46,9 @@ public class SOMMain {
 		// methodsTags = mTag.getConvertedMethodsTags();
 		 
 		 
-		 /**
-		  * temporarily commented to observe WordNet behavior
-		  */
-		 //methodsTags = mTag.getOriginalMethodsTags();
-		methodsTags = mTag.getConvertedMethodsTags();
+		
+		 methodsTags = mTag.getLowerCaseMethodsTags();
+		 //methodsTags = mTag.getConvertedMethodsTags();
 		 JaccardDifference jD = new JaccardDifference(methodsTags);
 		 neuronsList = jD.getNeuronsList();
 		 maxClusters = neuronsList.size();
@@ -87,10 +85,7 @@ public class SOMMain {
 		 clusters.displayNeurons();
 		 System.out.println("\nFinal clusters:");
 		 clusters.displayClusters();
-		 
-		 
-		 //Temporary commenting ends here
-		 
+			 
 		 
 		 /********* Silhouette Index Calculation**********/
 		 //SilhouetteIndexCalculation SIC = new SilhouetteIndexCalculation(finalNeurons, clusters.getClusters(), methodsVector);

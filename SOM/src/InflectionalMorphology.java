@@ -38,8 +38,8 @@ public class InflectionalMorphology {
 		Synset[] synsets = database.getSynsets(word);
 		
 		if (synsets.length > 0){	
-			
-			System.out.println("The following synsets contain '" +
+			flag = true;
+			/*System.out.println("The following synsets contain '" +
 					word + "' or a possible base form " + 	"of that text:");
 			System.out.println("----------------------------------------------------------");
 			
@@ -51,11 +51,11 @@ public class InflectionalMorphology {
 				}
 				//System.out.println(": " + synsets[i].getDefinition());
 				System.out.println();
-			}
-			flag = true;
+			}*/
+			
 		}		
 		else{
-			System.err.println("No synsets exist that contain the word form '" + word + "'");
+			//System.err.println("No synsets exist that contain the word form '" + word + "'");
 			flag = false;
 		}
 		return flag;		

@@ -76,12 +76,12 @@ public class JaccardDifference {
 			System.out.println();
 		}
 		
-		initializeCentroids();
+		initializeCentroidsList();
 				
-		System.out.println();
+		/*System.out.println();
 		for(int i=0; i<maxDist.length; i++){
 			System.out.println("max distant node of  node " +i+": "+ maxDist[i] + " value: " + maxDistVal[i]);
-		}
+		}*/
 		
 		System.out.println();
 		for(int i=0; i<minDist.length; i++){
@@ -136,7 +136,10 @@ public class JaccardDifference {
                 list.add(t);
             }
         }
-
+        
+      //Duplication removal from intersection arraylist
+       list = new ArrayList<T>(new LinkedHashSet<T>(list));
+        
         return list;
     }
     
@@ -147,12 +150,12 @@ public class JaccardDifference {
     }
     
     //Initializes centorids on the basis of farthest methods
-    private void initializeCentroids(){		
+    private void initializeCentroidsList(){		
 
 		//In 'centroids' arraylist place maximum distance nodes 
 		for (int i=0; i<maxDist.length; i++){
 			maxDistVal[i] = dist[i][maxDist[i]];
-			if (dist[i][maxDist[i]]>=1.0){
+			if (dist[i][maxDist[i]]>=0.8){
 				centroidList.add(maxDist[i]);
 			}
 		}
@@ -200,7 +203,7 @@ public class JaccardDifference {
 	    	
     	List<Integer> removelList = new ArrayList<Integer>();
     	
-    	for (int i=0; i<centroidList.size(); i++){
+/*    	for (int i=0; i<centroidList.size(); i++){
     		for (int j=i+1; j<centroidList.size(); j++){
     			int x=centroidList.get(j);
     			if (!removelList.contains(x)){
@@ -209,8 +212,24 @@ public class JaccardDifference {
 	    			}
     			}
     		}
-    	}
+    	}*/
     	
+    	System.out.println("Distance list of close neurons");
+    	for (int i=0; i<centroidList.size(); i++){
+    		int y=centroidList.get(i);{
+    		if (!removelList.contains(y))
+	    		for (int j=i+1; j<centroidList.size(); j++){
+	    			int x=centroidList.get(j);
+	    			
+	    			if (!removelList.contains(x)){
+		    			if (dist[centroidList.get(i)][centroidList.get(j)]<0.9){
+		    				System.out.println("Dist of '" + centroidList.get(i) + "' & '" + centroidList.get(j) + "' : " + dist[centroidList.get(i)][centroidList.get(j)]);
+		    				removelList.add(centroidList.get(j));    				
+		    			}
+	    			}
+	    		}
+    		}
+    	}
     	//Duplication removal from removalList
     	removelList = new ArrayList<Integer>(new LinkedHashSet<Integer>(removelList));
     	System.out.println("close methods to be removed from initial neurons list : " + removelList);
