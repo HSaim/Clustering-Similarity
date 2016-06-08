@@ -1,8 +1,5 @@
 
-/**************************************** 
- * This class populates method vector
- * Then stems them
- * 	 ************************************/
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +9,7 @@ import java.util.List;
 /**
  * 
  * @author Habiba Saim
- * This class populates method vector
+ * This class populates methods keywords/tags 2D ArrayList
  * Then convert the morphological words into their base words
  * And replaces all synonyms by one word 
  *
@@ -21,336 +18,49 @@ import java.util.List;
 public class MethodTagsCreation {
 	
 	private static final double MIN_SIMILARITY_SCORE = 0.9;
-	private List<List<String>> methodsTagsOriginal = new ArrayList<List<String>>();
+	private List<List<String>> methodsTagsOriginal;
 	private List<List<String>> methodsTagsLowerCase;
-	private List<List<String>> methodsTagsStemmed = new ArrayList<List<String>>();
-	private List<List<String>> methodsTagsConverted;// = new ArrayList<List<String>>();
+	private List<List<String>> methodsTagsStemmed;
+	private List<List<String>> methodsTagsConverted;
 	//List<List<String>> methodsTagsStmdSyn = new ArrayList<List<String>>();
 	//String inputFile = System.getProperty("user.dir")+"/SEWordSim-r1.db";   //This path is useful when db is in SOM folder
 	String inputFile = "D:/CRP/SEWordSimDB/SEWordSim-r1.db";
-	WordSimFinder facade = new WordSimFinder(inputFile);
-	SimilarityCalculation sc = new SimilarityCalculation();	
+	WordSimFinder facade;
+	SimilarityCalculation sc;	
+	private CSVReader reader;
 	
-	/***** Creates arraylist of recommended methods with their tags *******/
+	public MethodTagsCreation(){
+		 methodsTagsOriginal = new ArrayList<List<String>>();
+		 methodsTagsStemmed = new ArrayList<List<String>>();
+		 facade = new WordSimFinder(inputFile);
+		 sc = new SimilarityCalculation();
+		 reader  = new CSVReader();
+		
+	}
+	
+	/**
+	 * Creates ArrayList of recommended methods with their tags 
+	 */
 	public void populateMethodTagsList(){
-		
-		/***** 1st methodsTags ArrayList **********/
-		 /*methodsTags.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
-		 
-//		 methodsTags.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
-//		 methodsTags.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
-//		 methodsTags.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
-		 methodsTags.add(Arrays.asList("degree", "tuition fee", "application requirements", "qualification", "admission dates", "admission documents"));
-		 //methodsTags.add(Arrays.asList("weapon styles", "weapon types", "number of players", "degree", "game modes", "colour"));
-		 methodsTags.add(Arrays.asList("weapon styles", "weapon types", "number of players","degree", "game modes", "colour selection"));
-		 methodsTags.add(Arrays.asList("weapon styles",  "number of players", "weapon types", "instructions", "demo", "colour selection"));
-		 methodsTags.add(Arrays.asList("weapon styles", "game modes", "number of players", "demo", "level selection", "player info"));
-		 methodsTags.add(Arrays.asList("degree", "admissions", "applications", "admission form", "admission dates", "eligibility criteria"));
-		 methodsTags.add(Arrays.asList("fee criteria", "pre requisite", "application requirements", "financial aid", "test schedule", "degree"));
-		 methodsTags.add(Arrays.asList("fee criteria",  "application requirements", "pre requisite", "financial aid", "test schedule", "degree"));
-		 //methodsTags.add(Arrays.asList("pay online", "registration", "pay modes", "website", "test criteria", "FAQ"));
-		 methodsTags.add(Arrays.asList("game", "quick instructions", "3D", "number of players", "help", "demo"));
-		 methodsTags.add(Arrays.asList("SAT I", "Programmes", "admission process", "Admissions and Aid", "entry test", "apply online"));
-		 methodsTags.add(Arrays.asList("admissions", "weapon styles", "degree", "number of players", "game modes", "demo"));
-		 methodsTags.add(Arrays.asList("weapon styles", "weapon types", "number of players", "applications", "game modes", "colour"));
-		 methodsTags.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
-		 */
-		
-		/***** 2nd methodsTags ArrayList **********/
-		/* methodsTags.add(Arrays.asList("degree", "admissions", "applications", "pre-requisite", "fee-criteria", "tuition-fee"));
-		 methodsTags.add(Arrays.asList("degree", "tuition-fee", "application-requirements", "qualification", "admission-dates", "admission-documents"));
-		 methodsTags.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players", "degree", "game-modes", "colour"));
-		 methodsTags.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players","degree", "game-modes", "colour-selection"));
-		 methodsTags.add(Arrays.asList("weapon-styles",  "numbe-of-players", "weapon-types", "instructions", "demo", "colour-selection"));
-		 methodsTags.add(Arrays.asList("weapon-styles", "game-modes", "number-of-players", "demo", "level-selection", "player-info"));
-		 methodsTags.add(Arrays.asList("degree", "admissions", "applications", "admission-form", "admission-dates", "eligibility-criteria"));
-		 methodsTags.add(Arrays.asList("fee-criteria", "pre-requisite", "application-requirements", "financial-aid", "test-schedule", "degree"));
-		 methodsTags.add(Arrays.asList("fee-criteria",  "application-requirements", "pre-requisite", "financial-aid", "test-schedule", "degree"));
-		 methodsTags.add(Arrays.asList("admissions", "weapon-styles", "degree", "number-of-players", "game-modes", "demo"));
-		 methodsTags.add(Arrays.asList("SAT-I", "Programmes", "admission-process", "Admissions-and-Aid", "entry-test", "apply-online"));
-		 methodsTags.add(Arrays.asList("game", "quick-instructions", "3D", "number-of-players", "help", "demo"));
-		 methodsTags.add(Arrays.asList("pay-online", "registration", "pay-modes", "website", "test-criteria", "FAQ"));*/
-		 
-		 /******************Method Updates after adding new tags*****************/
-		/***** 3rd methodsTags ArrayList **********/
-		 /*methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre-requisite", "fee-criteria", "tuition-fee", "help", "Undergraduate-Admissions", "Executive-Education", "Transfer-Admissions"));
-		 methodsTagsOriginal.add(Arrays.asList("degree", "tuition-fee", "application-requirements", "qualification", "admission-dates", "admission-documents", "FAQs", "Fee-Structure", "Funds", "tuition-fee"));
-		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players", "degree", "game-modes", "colour", "Utilities", "Software", "Process", "Smart-Phones"));
-		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players","degree", "game-modes", "colour-selection", "Name", "Updates", "Software", "Platform"));
-		 methodsTagsOriginal.add(Arrays.asList("weapon-styles",  "numbe-of-players", "weapon-types", "instructions", "demo", "colour-selection","Updates", "Selections", "Options", "Mobile-Games" ));
-		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "game-modes", "number-of-players", "demo", "level-selection", "player-info","Starred", "Objects", "Weapons", "Play"));
-		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "admission-form", "admission-dates", "eligibility-criteria","Qualification", "Programs-Offered", "Admission-Policies", "Options"));
-		 methodsTagsOriginal.add(Arrays.asList("fee-criteria", "pre-requisite", "application-requirements", "financial-aid", "test-schedule", "degree","FAQs", "Demo", "Instructions", "Programs"));
-		 methodsTagsOriginal.add(Arrays.asList("fee-criteria",  "application-requirements", "pre-requisite", "financial-aid", "test-schedule", "degree","Objects", "Apply-Online", "Required-Documents", "Transfer-Admissions"));
-		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon-styles", "degree", "number-of-players", "game-modes", "demo","level-selection", "Software", "Platform", "FAQs"));
-		 methodsTagsOriginal.add(Arrays.asList("SAT-I", "Programmes", "admission-process", "Admissions-and-Aid", "entry-test", "apply-online","Transfer-Admissions", "Executive-Programs", "NOP", "Admission-Policy"));
-		 methodsTagsOriginal.add(Arrays.asList("game", "quick-instructions", "3D", "number-of-players", "help", "demo","Objects", "Play", "level-selection", "Utilities"));
-		 methodsTagsOriginal.add(Arrays.asList("pay-online", "registration", "pay-modes", "website", "test-criteria", "FAQs","Transfer-Admissions", "Executive-Programs", "NOP", "Smart-Phones"));
-		 */
-		
-		/********** More Updations with small broken method tags *********/
-		/***** 4th methodsTags ArrayList **********/
-		/* methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "feecriteria", "tuitionfee", "help", "Undergraduate", "Executive", "Transfer"));
-		 methodsTagsOriginal.add(Arrays.asList("degree", "tuitionfee",  "qualification", "admission", "documents", "FAQs", "FeeStructure", "Dates", "Tuitionfee"));
-		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "numberofplayers", "degree", "gamemodes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
-		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
-		 methodsTagsOriginal.add(Arrays.asList("weapon",  "number-of-players", "types", "instructions", "demo", "colourselection","Updates", "Selections", "Options", "Mobile" ));
-		 methodsTagsOriginal.add(Arrays.asList("styles", "gamemodes", "number-of-players", "demo", "levelselection", "player-info","Starred", "Objects", "Weapons", "Play"));
-		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "admission-form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
-		 methodsTagsOriginal.add(Arrays.asList("feecriteria", "prerequisite", "requirements", "financialaid", "testschedule", "degree","FAQs", "Demo", "Instructions", "Programs"));
-		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financialaid", "testschedule", "degree","Objects", "ApplyOnline", "Required-Documents", "Transfer-Admissions"));
-		 methodsTagsOriginal.add(Arrays.asList("admissions", "weaponstyles", "degree", "number-of-players", "gamemodes", "demo","levelselection", "Software", "Platform", "FAQs"));
-		 methodsTagsOriginal.add(Arrays.asList("SATI", "Programmes", "admissionprocess", "AdmissionsandAid", "entrytest", "applye","Transfer", "Executive", "NOP", "Admission"));
-		 methodsTagsOriginal.add(Arrays.asList("game", "quickinstructions", "3D", "number-of-players", "help", "demo","Objects", "Play", "levelselection", "Utilities"));
-		 methodsTagsOriginal.add(Arrays.asList("payonline", "registration", "paymodes", "website", "testcriteria", "FAQs","Transfer", "Executive", "NOP", "SmartPhones"));
-		 */
-		 /********** More Updations with single words tags *********/
-		/***** 5th methodsTags ArrayList **********/
-		/* methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "entrance", "documents", "faqs", "structure", "dates", "tuition"));
-		
-		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "utilities", "software", "Process", "Smart", "Phones"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "name", "updates", "software", "platform"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","updates", "selections", "options", "mobile" ));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","starred", "objects", "weapons", "play"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","qualification", "programs", "policies", "options"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","faqs", "demo", "instructions", "Programs"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree","objects", "apply", "online", "required", "documents", "transfer", "admissions"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
-		
-		 methodsTagsOriginal.add(Arrays.asList("SAT1", "Programmes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "3D", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
-		
-		 methodsTagsOriginal.add(Arrays.asList("pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
-		 */
-		
-		/******************Method Updates after having more meaningful tags relevant to domains*****************/
-		/***** 6th methodsTags ArrayList **********/
-		/*methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Demo", "Instructions", "Programs"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
-		
-		 methodsTagsOriginal.add(Arrays.asList("pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
-		 		 
-		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree","Objects", "Apply", "Online", "Required", "Documents", "Transfer", "Admissions"));
-		 
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
-		 		 			 
-		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "3D", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
-		 */
-		 /******************Method Updates after having more meaningful tags relevant to 3 domains*****************/
-			/***** 7th methodsTags ArrayList **********/
-		/*	
-			methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
-			 
-			methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Admissions", "Programs"));
-			 
-			methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
-			
-			 methodsTagsOriginal.add(Arrays.asList("Admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
-			 		 
-			 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree", "Apply", "Online", "Required", "SATI", "Transfer", "Admissions"));
-			 
-			
-			 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
-			 		 			 
-			 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
-			 
-		 
-			 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("File", "office", "software", "department", "instructions",  "profit", "loss"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
-			 
-			 methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
-		*/
-		
-		
-		/******************Method Updates after having same tags relevant to 3 domains*****************/
-		/***** 8th methodsTags ArrayList **********/
-	/*		 
-		methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
-		
-		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
-		
-		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
-		//methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
-		 
-		 //methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Admissions", "Programs"));
-		 
-		//methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
-		
-		// methodsTagsOriginal.add(Arrays.asList("Admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
-		 		 
-		// methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree", "Apply", "Online", "Required", "SATI", "Transfer", "Admissions"));
-		 
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
-		 		 			 
-		// methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
-		 
-	 
-		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
-		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("File", "office", "software", "department", "instructions",  "profit", "loss"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
-		 
-		// methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
-		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
-		*/
-		 
-		
-		 /******************
-		  * Method Updates after having more meaningful tags relevant to 3 domains 
-		  * but methods of different domains are mixed up. Its 7th one. Just methods sequence is changed
-		  * 	*****************/
-		/***** 9th methodsTags ArrayList **********/
-		
-		/*methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
-		 		 
-		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Admissions", "Programs"));
-		 		 
-		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
-		
-		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree", "Apply", "Online", "Required", "SATI", "Transfer", "Admissions"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("File", "office", "software", "department", "instructions",  "profit", "loss"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
-		 		 			 
-		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("Admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
-		 
-		 methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
-	
-	*/
-		 
-		 /******************
-		  * Method Updates after having more meaningful tags relevant to 3 domains including synonyms and morphological words
-		  * but methods of different domains are mixed up. Its 7th one. Just methods sequence is changed
-		  * 	*****************/
-		/***** 10th methodsTags ArrayList **********/
-		
-		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
-		 		 
-		methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisites", "requirements", "financial","aid", "test", "schedule", "degree","faqs", "admissions", "programs"));
-		 		 
-		methodsTagsOriginal.add(Arrays.asList("documents", "admission", "applications", "form", "dates", "eligibility","qualification", "programs", "policies", "options"));
-		
-		methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "timetable", "degree", "apply", "online", "required", "sat1", "transfer", "admissions"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","updates", "selections", "options", "mobile" ));
-		 
-		methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "name", "updates", "software", "platform"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("file", "office", "software", "department", "instructions",  "profit", "loss"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "software", "platform", "faqs"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "utilities", "software", "process", "smart", "Phones"));
-		 
-	    methodsTagsOriginal.add(Arrays.asList("sat1", "programes", "process", "admissions", "aid", "entry", "test", "apply","transfer", "executive", "nop"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "objects", "weapons", "play"));
-		 		 			 
-		methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","objects", "play", "level", "Utilities"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "faqs", "structure", "dates", "tuition"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("tax", "return", "file", "review", "refund", "statement", "wage", "offices", "website", "income"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "faqs","transfer", "executive", "nop", "phones"));
-		 
-		methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
-		
-		methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
-	
-	
+		populateTenthList();
+		//populateListfromCSV();
 		 //stemMethodsTags();
 		convertInLowecase();
 		sortArrayList(methodsTagsLowerCase);
-		replaceSimilarTags();
+		//replaceSimilarTags();
 		
 		System.out.println("\n\tOriginal Methods Tags in lower case: ");
 		System.out.println("---------------------------------------");
 		displayMethods( methodsTagsLowerCase);
 		
-		System.out.println("\n\tUpdated Methods Tags after removal of morphological words");
+		/*System.out.println("\n\tUpdated Methods Tags after removal of morphological words");
 		System.out.println("------------------------------------------------------------------------------");
-		displayMethods(methodsTagsConverted);
+		displayMethods(methodsTagsConverted);*/
 	}
 	
-	// Convert all tags into same case i.e. lower case
+	/**
+	 * Convert all tags into same case i.e. lower case 
+	 */
 	private void convertInLowecase(){
 		
 		methodsTagsLowerCase  = new ArrayList<List<String>>();
@@ -368,11 +78,11 @@ public class MethodTagsCreation {
 		
 	}
 	
-	/* *****************************************************************
-	 *Stems method tags 
-	 *Handles synonyms
-	 *Stores the method tags in a new arraylist methodsTagsStemmed
-	 * ****************************************************************/
+	/**
+	 * Stems method tags
+	 * Handles synonyms
+	 * Stores the method tags in a new arraylist methodsTagsStemmed
+	 */
 	private void stemMethodsTags(){
 				
 		for (int i=0; i<methodsTagsOriginal.size(); i++){
@@ -396,11 +106,11 @@ public class MethodTagsCreation {
 		}*/
 	}
 	
-	/* *****************************************************************
-	 *Handles synonyms of methodsTagsStemmed arraylist 
-	 * *****************************************************************/
-	private void handleSynonyms (){
-		
+	
+	/**
+	 * Handles synonyms of methodsTagsStemmed arraylist with the help of SEWordSim db
+	 */
+	private void handleSynonyms (){	
 		
 		double similarityScore;
 		
@@ -436,21 +146,24 @@ public class MethodTagsCreation {
 		
 	}
 	
-	private void replaceSimilarTags(){
+	/**
+	 * Handling of synonyms with WordNet API - WS4J
+	 */
+	public void replaceSimilarTags(){
 		
-	methodsTagsConverted  = new ArrayList<List<String>>();
-		
-	for (int i=0; i<methodsTagsLowerCase.size(); i++){
-		String []arr =methodsTagsLowerCase.get(i).toArray(new String[methodsTagsLowerCase.get(i).size()]);
-		methodsTagsConverted.add(Arrays.asList(arr));
-	}
+		methodsTagsConverted  = new ArrayList<List<String>>();
+			
+		for (int i=0; i<methodsTagsLowerCase.size(); i++){
+			String []arr =methodsTagsLowerCase.get(i).toArray(new String[methodsTagsLowerCase.get(i).size()]);
+			methodsTagsConverted.add(Arrays.asList(arr));
+		}
 	 
 
 		double similarityScore;
 		
 		for (int i=0; i<methodsTagsConverted.size(); i++){
 			List<String> tags1 = methodsTagsConverted.get(i);
-			//System.out.println("Methd for comparison\n" + tags1);
+			//System.out.println("Method for comparison\n" + tags1);
 			for (int j=0; j<tags1.size(); j++){
 				String tag = tags1.get(j);
 					for (int k=i+1; k<methodsTagsConverted.size(); k++){
@@ -507,7 +220,7 @@ public class MethodTagsCreation {
 		return methodsTagsLowerCase;
 	}
 	
-	private void displayMethods(List<List<String>> methods){		
+	public void displayMethods(List<List<String>> methods){		
 		
 		for(int i=0; i<methods.size(); i++){
 			System.out.println(methods.get(i));
@@ -519,6 +232,369 @@ public class MethodTagsCreation {
 		for (int i=0; i<methods.size(); i++){
 			 Collections.sort(methods.get(i));
 		}		
+	}
+	
+	/**
+	 * Creates the 1st testing batch of methods tags 
+	 */
+	private void populateFirstList(){
+		//Due to  more than one word in tags, following data is not good for clustering 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
+		 
+//		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
+//		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
+//		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "tuition fee", "application requirements", "qualification", "admission dates", "admission documents"));
+		 //methodsTagsOriginal.add(Arrays.asList("weapon styles", "weapon types", "number of players", "degree", "game modes", "colour"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon styles", "weapon types", "number of players","degree", "game modes", "colour selection"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon styles",  "number of players", "weapon types", "instructions", "demo", "colour selection"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon styles", "game modes", "number of players", "demo", "level selection", "player info"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "admission form", "admission dates", "eligibility criteria"));
+		 methodsTagsOriginal.add(Arrays.asList("fee criteria", "pre requisite", "application requirements", "financial aid", "test schedule", "degree"));
+		 methodsTagsOriginal.add(Arrays.asList("fee criteria",  "application requirements", "pre requisite", "financial aid", "test schedule", "degree"));
+		 //methodsTagsOriginal.add(Arrays.asList("pay online", "registration", "pay modes", "website", "test criteria", "FAQ"));
+		 methodsTagsOriginal.add(Arrays.asList("game", "quick instructions", "3D", "number of players", "help", "demo"));
+		 methodsTagsOriginal.add(Arrays.asList("SAT I", "Programmes", "admission process", "Admissions and Aid", "entry test", "apply online"));
+		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon styles", "degree", "number of players", "game modes", "demo"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon styles", "weapon types", "number of players", "applications", "game modes", "colour"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre requisite", "fee criteria", "tuition fee"));		 
+	}
+	
+	/**
+	 * Creates the 2nd testing batch of methods tags 
+	 */
+	private void populateSecondList(){
+		
+		//Compound words don't help in strong clustering
+		
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre-requisite", "fee-criteria", "tuition-fee"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "tuition-fee", "application-requirements", "qualification", "admission-dates", "admission-documents"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players", "degree", "game-modes", "colour"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players","degree", "game-modes", "colour-selection"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles",  "numbe-of-players", "weapon-types", "instructions", "demo", "colour-selection"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "game-modes", "number-of-players", "demo", "level-selection", "player-info"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "admission-form", "admission-dates", "eligibility-criteria"));
+		 methodsTagsOriginal.add(Arrays.asList("fee-criteria", "pre-requisite", "application-requirements", "financial-aid", "test-schedule", "degree"));
+		 methodsTagsOriginal.add(Arrays.asList("fee-criteria",  "application-requirements", "pre-requisite", "financial-aid", "test-schedule", "degree"));
+		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon-styles", "degree", "number-of-players", "game-modes", "demo"));
+		 methodsTagsOriginal.add(Arrays.asList("SAT-I", "Programmes", "admission-process", "Admissions-and-Aid", "entry-test", "apply-online"));
+		 methodsTagsOriginal.add(Arrays.asList("game", "quick-instructions", "3D", "number-of-players", "help", "demo"));
+		 methodsTagsOriginal.add(Arrays.asList("pay-online", "registration", "pay-modes", "website", "test-criteria", "FAQ"));	
+	}
+	
+	/**
+	 * Creates the 3rd testing batch of methods tags 
+	 */
+	private void populateThirdList(){
+		
+		//Compound words don't help in strong clustering
+		/******************Method Updates after adding new tags*****************/
+		
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "pre-requisite", "fee-criteria", "tuition-fee", "help", "Undergraduate-Admissions", "Executive-Education", "Transfer-Admissions"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "tuition-fee", "application-requirements", "qualification", "admission-dates", "admission-documents", "FAQs", "Fee-Structure", "Funds", "tuition-fee"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players", "degree", "game-modes", "colour", "Utilities", "Software", "Process", "Smart-Phones"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "weapon-types", "number-of-players","degree", "game-modes", "colour-selection", "Name", "Updates", "Software", "Platform"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles",  "number-of-players", "weapon-types", "instructions", "demo", "colour-selection","Updates", "Selections", "Options", "Mobile-Games" ));
+		 methodsTagsOriginal.add(Arrays.asList("weapon-styles", "game-modes", "number-of-players", "demo", "level-selection", "player-info","Starred", "Objects", "Weapons", "Play"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "admission-form", "admission-dates", "eligibility-criteria","Qualification", "Programs-Offered", "Admission-Policies", "Options"));
+		 methodsTagsOriginal.add(Arrays.asList("fee-criteria", "pre-requisite", "application-requirements", "financial-aid", "test-schedule", "degree","FAQs", "Demo", "Instructions", "Programs"));
+		 methodsTagsOriginal.add(Arrays.asList("fee-criteria",  "application-requirements", "pre-requisite", "financial-aid", "test-schedule", "degree","Objects", "Apply-Online", "Required-Documents", "Transfer-Admissions"));
+		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon-styles", "degree", "number-of-players", "game-modes", "demo","level-selection", "Software", "Platform", "FAQs"));
+		 methodsTagsOriginal.add(Arrays.asList("SAT-I", "Programmes", "admission-process", "Admissions-and-Aid", "entry-test", "apply-online","Transfer-Admissions", "Executive-Programs", "NOP", "Admission-Policy"));
+		 methodsTagsOriginal.add(Arrays.asList("game", "quick-instructions", "3D", "number-of-players", "help", "demo","Objects", "Play", "level-selection", "Utilities"));
+		 methodsTagsOriginal.add(Arrays.asList("pay-online", "registration", "pay-modes", "website", "test-criteria", "FAQs","Transfer-Admissions", "Executive-Programs", "NOP", "Smart-Phones"));
+		 
+	}
+	
+	/**
+	 * Creates the 4th testing batch of methods tags 
+	 */
+	private void populateFourthList(){
+		
+		//Compound words don't help in strong clustering
+		/********** More Updations with small broken method tags *********/
+		
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "feecriteria", "tuitionfee", "help", "Undergraduate", "Executive", "Transfer"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "tuitionfee",  "qualification", "admission", "documents", "FAQs", "FeeStructure", "Dates", "Tuitionfee"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "numberofplayers", "degree", "gamemodes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "number-of-players", "types", "instructions", "demo", "colourselection","Updates", "Selections", "Options", "Mobile" ));
+		 methodsTagsOriginal.add(Arrays.asList("styles", "gamemodes", "number-of-players", "demo", "levelselection", "player-info","Starred", "Objects", "Weapons", "Play"));
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "admission-form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
+		 methodsTagsOriginal.add(Arrays.asList("feecriteria", "prerequisite", "requirements", "financialaid", "testschedule", "degree","FAQs", "Demo", "Instructions", "Programs"));
+		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financialaid", "testschedule", "degree","Objects", "ApplyOnline", "Required-Documents", "Transfer-Admissions"));
+		 methodsTagsOriginal.add(Arrays.asList("admissions", "weaponstyles", "degree", "number-of-players", "gamemodes", "demo","levelselection", "Software", "Platform", "FAQs"));
+		 methodsTagsOriginal.add(Arrays.asList("SATI", "Programmes", "admissionprocess", "AdmissionsandAid", "entrytest", "applye","Transfer", "Executive", "NOP", "Admission"));
+		 methodsTagsOriginal.add(Arrays.asList("game", "quickinstructions", "3D", "number-of-players", "help", "demo","Objects", "Play", "levelselection", "Utilities"));
+		 methodsTagsOriginal.add(Arrays.asList("payonline", "registration", "paymodes", "website", "testcriteria", "FAQs","Transfer", "Executive", "NOP", "SmartPhones"));		 
+	}
+	
+	/**
+	 * Creates 5th testing batch of methods tags 
+	 */
+	private void populateFifthList(){
+		 /********** More Updations with single words tags *********/
+		/***** 5th methodsTags ArrayList **********/
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "entrance", "documents", "faqs", "structure", "dates", "tuition"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "utilities", "software", "Process", "Smart", "Phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "name", "updates", "software", "platform"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","updates", "selections", "options", "mobile" ));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","starred", "objects", "weapons", "play"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","qualification", "programs", "policies", "options"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","faqs", "demo", "instructions", "Programs"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree","objects", "apply", "online", "required", "documents", "transfer", "admissions"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("SAT1", "Programmes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "3D", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
+		 
+	}
+	
+
+	/**
+	 * Creates 6th testing batch of methods tags 
+	 */
+	private void populateSixthList(){
+		
+		/******************Method Updates after having more meaningful tags relevant to domains*****************/
+		/***** 6th methodsTags ArrayList **********/
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Demo", "Instructions", "Programs"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree","Objects", "Apply", "Online", "Required", "Documents", "Transfer", "Admissions"));
+		 
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("admissions", "weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
+		 		 			 
+		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "3D", "players", "help", "demo","Objects", "Play", "level", "Utilities"));		 
+	
+	}
+	
+	/**
+	 * Creates 7th testing batch of methods tags 
+	 */
+	private void populateSeventhList(){
+		/******************Method Updates after having more meaningful tags relevant to 3 domains*****************/
+		/***** 7th methodsTags ArrayList **********/
+	
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Admissions", "Programs"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("Admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree", "Apply", "Online", "Required", "SATI", "Transfer", "Admissions"));
+		 
+		
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
+		 		 			 
+		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
+		 
+	 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("File", "office", "software", "department", "instructions",  "profit", "loss"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));	
+	}
+	
+	/**
+	 * Creates 8th testing batch of methods tags 
+	 */
+	private void populateEighthList(){
+		/******************Method Updates after having same tags relevant to 3 domains*****************/
+		/***** 8th methodsTags ArrayList **********/
+			 
+		methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
+		
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		//methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
+		 
+		 //methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Admissions", "Programs"));
+		 
+		//methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
+		
+		// methodsTagsOriginal.add(Arrays.asList("Admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
+		 		 
+		// methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree", "Apply", "Online", "Required", "SATI", "Transfer", "Admissions"));
+		 
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
+		 		 			 
+		// methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
+		 
+	 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
+		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("File", "office", "software", "department", "instructions",  "profit", "loss"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
+		 
+		// methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));				
+	}
+	
+	/**
+	 * Creates 9th testing batch of methods tags 
+	 */
+	private void populateNinthList(){
+
+		 /******************
+		  * Method Updates after having more meaningful tags relevant to 3 domains 
+		  * but methods of different domains are mixed up. Its 7th one. Just methods sequence is changed
+		  * 	*****************/
+		/***** 9th methodsTags ArrayList **********/
+		
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Admissions", "Programs"));
+		 		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "form", "dates", "eligibility","Qualification", "Programs", "Policies", "Options"));
+		
+		 methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "schedule", "degree", "Apply", "Online", "Required", "SATI", "Transfer", "Admissions"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","Updates", "Selections", "Options", "Mobile" ));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "Name", "Updates", "Software", "Platform"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("File", "office", "software", "department", "instructions",  "profit", "loss"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "Software", "Platform", "FAQs"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "Utilities", "Software", "Process", "Smart", "Phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("SATI", "Programes", "process", "Admissions", "Aid", "entry", "test", "apply","Transfer", "Executive", "NOP"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "Objects", "Weapons", "Play"));
+		 		 			 
+		 methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","Objects", "Play", "level", "Utilities"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "FAQs", "Structure", "Dates", "tuition"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "return", "File", "review", "refund", "statement", "wage", "offices", "website", "income"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("Admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "FAQs","Transfer", "Executive", "NOP", "Phones"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
+		 
+		 methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));			
+	}
+	
+	/**
+	 * Creates 10th testing batch of methods tags 
+	 */
+	private void populateTenthList(){
+		 /******************
+		  * Method Updates after having more meaningful tags relevant to 3 domains including synonyms and morphological words
+		  * but methods of different domains are mixed up. Its 7th one. Just methods sequence is changed
+		  * 	*****************/
+		/***** 10th methodsTags ArrayList **********/
+		
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
+		 		 
+		methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisites", "requirements", "financial","aid", "test", "schedule", "degree","faqs", "admissions", "programs"));
+		 		 
+		methodsTagsOriginal.add(Arrays.asList("documents", "admission", "applications", "form", "dates", "eligibility","qualification", "programs", "policies", "options"));
+		
+		methodsTagsOriginal.add(Arrays.asList("fee",  "requirements", "prerequisite", "financial", "aid", "test", "timetable", "degree", "apply", "online", "required", "sat1", "transfer", "admissions"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("weapon",  "players", "types", "instructions", "demo", "colour","updates", "selections", "options", "mobile" ));
+		 
+		methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "game", "modes", "colour", "name", "updates", "software", "platform"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("file", "office", "software", "department", "instructions",  "profit", "loss"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("weapon", "styles", "degree", "players", "game", "modes", "demo","level", "selection", "software", "platform", "faqs"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("weapon","styles", "types", "players", "degree", "game","modes", "colour", "utilities", "software", "process", "smart", "Phones"));
+		 
+	    methodsTagsOriginal.add(Arrays.asList("sat1", "programes", "process", "admissions", "aid", "entry", "test", "apply","transfer", "executive", "nop"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("styles", "game", "modes", "players", "demo", "level", "selection", "info","Starred", "objects", "weapons", "play"));
+		 		 			 
+		methodsTagsOriginal.add(Arrays.asList("game", "instructions", "players", "help", "demo","objects", "play", "level", "Utilities"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("degree", "fee",  "qualification", "admission", "documents", "faqs", "structure", "dates", "tuition"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("tax", "return", "file", "review", "refund", "statement", "wage", "offices", "website", "income"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("admissions","pay", "online", "registration", "modes", "website", "test", "criteria", "faqs","transfer", "executive", "nop", "phones"));
+		 
+		methodsTagsOriginal.add(Arrays.asList("online", "tax", "file", "act", "income", "return", "forms", "credit", "refund"));
+		
+		methodsTagsOriginal.add(Arrays.asList("tax", "payer", "help", "stats", "bill", "income", "profit", "loss", "office"));		
+	}
+	
+	/**
+	 * Populates methods tags arraylist from  CSV file, which contains actual recommended methods/projects and their tags
+	 */
+	private void populateListfromCSV(){
+		reader.readCSV();
+		methodsTagsOriginal = reader.populateArrayList();
+		
 	}
 
 }

@@ -156,7 +156,7 @@ public class SimilarityCalculation {
 	 * 
 	 * Calculates similarity between two words.
 	 * Any RelatednessCalculator can be used here by changing 'wup' with any other calculator
-	 * already defined in the constructor.
+	 *  already defined in the constructor.
 	 * While calculating the relatedness,
 	 *  it gets the score of relatedness and stores the highest score in the variable maxScore
 	 */
@@ -175,6 +175,7 @@ public class SimilarityCalculation {
 		            Relatedness relatedness = wup.calcRelatednessOfSynset(synset1, synset2);
 		            double score = relatedness.getScore();
 		            if (score > maxScore && score<=1.0) { 
+		            //if (score > maxScore) { 
 		                maxScore = score;
 		            }
 		        }

@@ -167,8 +167,7 @@ public class ClusterCreator {
 	    /*for(int i=0; i<dist.length; i++){
 	    	System.out.print("D=" + i + ": "+  dist[i] + "\t");
 	    }
-    	System.out.println();*/
-	    return;
+    	System.out.println();*/	   
 	}
 	
 	//Returns index number of nearest neuron
@@ -188,10 +187,11 @@ public class ClusterCreator {
 
 	
 	//Returns value of learning factor
-		public double getAlpha()
-		{
-			return alpha;
-		}
+	public double getAlpha()
+	{
+		return alpha;
+	}
+	
 	//Displays resultant clusters
 	public void displayClusters(){
 		for (int i=0; i<clusters.size(); i++){

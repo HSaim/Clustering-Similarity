@@ -46,9 +46,18 @@ public class SOMMain {
 		// methodsTags = mTag.getConvertedMethodsTags();
 		 
 		 
-		
+		 //Exact matching code
 		 methodsTags = mTag.getLowerCaseMethodsTags();
-		 //methodsTags = mTag.getConvertedMethodsTags();
+		//Exact matching code - Ends
+		 
+		 //Semantic Matching code
+		 /*mTag.replaceSimilarTags();		 
+		 methodsTags = mTag.getConvertedMethodsTags();
+		 System.out.println("\n\tUpdated Methods Tags after removal of morphological words");
+		 System.out.println("------------------------------------------------------------------------------");
+		 mTag.displayMethods(methodsTags);*/
+		//Semantic Matching code - Ends
+		 
 		 JaccardDifference jD = new JaccardDifference(methodsTags);
 		 neuronsList = jD.getNeuronsList();
 		 maxClusters = neuronsList.size();

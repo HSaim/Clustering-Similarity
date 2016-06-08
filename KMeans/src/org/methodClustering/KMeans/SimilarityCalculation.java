@@ -1,5 +1,6 @@
+package org.methodClustering.KMeans;
 
-package com.wordnet.similarity;
+
 
 
 import java.util.ArrayList;
@@ -49,7 +50,6 @@ public class SimilarityCalculation {
 	private  static RelatednessCalculator lesk;
 	private  static RelatednessCalculator path; 
 	private  static RelatednessCalculator res;
-	private  static PorterStemmer stemmer;
 	private  static InflectionalMorphology morph;
 	
 	
@@ -64,7 +64,7 @@ public class SimilarityCalculation {
 		lesk  = new Lesk(db);
 		path  = new Path(db);
 		res  = new Resnik(db);
-		stemmer = new  PorterStemmer();
+		
 		morph = new InflectionalMorphology();		
 	}
 	
@@ -76,32 +76,25 @@ public class SimilarityCalculation {
 	 * Calculates similarity between word1 and word2
 	 * 
 	 */
-	private void calculate(String word1, String word2){		
+	public double computeSimilarity(String word1, String word2){		
 				
-        String stemmedWord1;
-        String stemmedWord2;
         String baseWord1, baseWord2;
         boolean wordFound;
+        double score = -1;
+        double score1 = -1;
+        double score2 = -1;
         
 		//Similarity Calculation on original words
 		System.out.println("Similarity calculation on original words");
 		System.out.println("---------------------------------------");
 		System.out.println("Original Words: " + word1 + ", "+word2);
-		findSimilarity(word1, word2);
+		score1 = findSimilarity(word1, word2);
 		System.out.println("");		
 		
-		//Similarity Calculation on stemmed words
-		/*stemmedWord1 = stemmer.stemWord(word1);
-		stemmedWord2 = stemmer.stemWord(word2);
-		
-		System.out.println("Similarity calculation on stemmed words");
-		System.out.println("---------------------------------------");
-		System.out.println("Words before stemming: " + word1 + ", "+word2);
-		System.out.println("Words after stemming: " + stemmedWord1 + ", "+stemmedWord2);
-		findSimilarity(stemmedWord1, stemmedWord2);
-		System.out.println("");*/
-		
 		//Similarity calculation after converting morphological words to their base
+		//baseWord1 = morph.getBaseWord(word1);
+		//baseWord2 = morph.getBaseWord(word2);
+		
 		
 		//Check if word1 does not exist in WordNet, then convert it into base word  
 		//Use WS4J API to check whether a word is in WordNet DB or not
@@ -123,13 +116,20 @@ public class SimilarityCalculation {
 			baseWord2 = morph.getBaseWord(word2);
 		else
 			baseWord2 = word2;
-		//baseWord1 = morph.getBaseWord(word1);
-		//baseWord2 = morph.getBaseWord(word2);
+		
 		System.out.println("Similarity calculation on base words");
 		System.out.println("---------------------------------------");
 		System.out.println("Inflectional Morphological Words: " + word1 + ", "+word2);
 		System.out.println("Base Words: " + baseWord1 + ", "+baseWord2);
-		findSimilarity(baseWord1, baseWord2);
+		score2 = findSimilarity(baseWord1, baseWord2);
+		
+		if (score1>score2){
+			score = score1;
+		}
+		else{
+			score = score2;
+		}
+		return score;
 		
 	}
 		/**
@@ -160,13 +160,12 @@ public class SimilarityCalculation {
 	 * While calculating the relatedness,
 	 *  it gets the score of relatedness and stores the highest score in the variable maxScore
 	 */
-	private static void findSimilarity(String word1, String word2){
+	private static double findSimilarity(String word1, String word2){
 		
 		WS4JConfiguration.getInstance().setMFS(true);
 		List<POS[]> posPairs = wup.getPOSPairs();
 		double maxScore = -1D;
-		String p1 = null, p2 = null;
-		
+
 		for(POS[] posPair: posPairs) {
 		    List<Concept> synsets1 = (List<Concept>)db.getAllConcepts(word1, posPair[0].toString());
 		    List<Concept> synsets2 = (List<Concept>)db.getAllConcepts(word2, posPair[1].toString());
@@ -178,10 +177,7 @@ public class SimilarityCalculation {
 		            if (score > maxScore && score<=1.0) { 
 		                maxScore = score;
 		            }
-		            p1=synset1.getPos().toString();
-			        p2=synset2.getPos().toString();
-		        } 
-		       
+		        }
 		    }
 		}
 
@@ -189,8 +185,8 @@ public class SimilarityCalculation {
 		    maxScore = 0.0;
 		}
 
-		//System.out.println("sim('" + word1 + "', '" + word2 + "') =  " + maxScore);
-		System.out.println("sim('" + word1 +" "+ p1 +"', '" + word2 +" "+ p2+ "') =  " + maxScore);
+		System.out.println("sim('" + word1 + "', '" + word2 + "') =  " + maxScore);
+		return maxScore;
 	}
 	
 	private boolean isInWordNet(String word){
@@ -210,17 +206,5 @@ public class SimilarityCalculation {
 			}
 		}
 		return flag;		
-	}
-
-	public static void main(String[] args) {
-		
-		SimilarityCalculation sc = new SimilarityCalculation();
-		
-		String word1 = "active";
-        String word2 = "bishop";
-		
-		sc.calculate(word1, word2);
-		//sc.compute("play", "playing");
-		
-	}
+	}	
 }
