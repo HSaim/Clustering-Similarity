@@ -90,17 +90,8 @@ Displays word's ID, name, definition, and POS information
     https://wordnet.princeton.edu/wordnet/download/current-version/
 2. MIT Java Wordnet API:
 
-      edu.mit.jwi_2.4.0.jar - http://projects.csail.mit.edu/jwi/
+      jwi-2.2.3.jar - http://www.java2s.com/Code/Jar/j/Downloadjwi223jar.htm
       
-### Instructions for WS4JSimilarityCalculation:
-
-1. After downloading above APIs and database, place the jar file in 'Lib' folder and database in 'WordNet-2-1' folder, in the project’s folder.
-
-
-2. If you are running the project in eclipse, In the build path, choose the option ‘Configure Build Path’ and add above mentioned JARs in the ‘Libraries’ tab.
-
-
-
 
 
 
