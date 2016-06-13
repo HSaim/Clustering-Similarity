@@ -73,10 +73,10 @@ public class JaccardDifference {
 			System.out.println();
 		}
 		initializeNeuronsList();
-		System.out.println();
+		/*System.out.println();
 		for(int i=0; i<maxDist.length; i++){
 			System.out.println("max distant node of  node " +i+": "+ maxDist[i] + " value: " + maxDistVal[i]);
-		}
+		}*/
 		
 		System.out.println();
 		for(int i=0; i<minDist.length; i++){
@@ -153,23 +153,23 @@ public class JaccardDifference {
 
 		//In 'neurons' arraylist place maximum distance nodes  	
 		
-    	/**** Blocked to check the working of logic written next to this block ********//*
+    	/**** Blocked to check the working of logic written next to this block ********/
     	for (int i=0; i<maxDist.length; i++){
 			maxDistVal[i] = dist[i][maxDist[i]];
 			if (dist[i][maxDist[i]]>=0.8){
 				neuronsList.add(maxDist[i]);
 			}
-		}*/
+		}
 		
     	
     	/******** Testing initialization 28-04-2016 ********/
-    	for (int i=0; i<dist.length; i++){
+    	/*for (int i=0; i<dist.length; i++){
     		for (int j=0; j<dist[i].length; j++){
     			if (dist[i][j]>=0.8){
     				neuronsList.add(j);
     			}
     		}
-    	}
+    	}*/
     	
 		addMissingNeurons();
 		

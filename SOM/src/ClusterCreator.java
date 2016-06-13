@@ -55,8 +55,8 @@ public class ClusterCreator {
 	    		neuron.add((float)(Math.floor(r.nextFloat()*100.0)/100.0));
 	    	neurons.add(neuron);
 	    }*/
-		System.out.println("\nInitial neurons");
-		displayNeurons();
+		//System.out.println("\nInitial neurons");
+		//displayNeurons();
 	}
 	
 	public void trainNeurons(List<List<Double>> trainingVector)
@@ -77,7 +77,7 @@ public class ClusterCreator {
 	            
 	            //Find the smallest distant neuron
 	            minDistanceIndex = computeSmallestDistanceIndex();
-	            System.out.println("Method #: " + vecNum + " Closest neuron is: " + minDistanceIndex );
+	           // System.out.println("Method #: " + vecNum + " Closest neuron is: " + minDistanceIndex );
 	            List<Float> neuron = neurons.get(minDistanceIndex);
 	            
 	            
@@ -135,7 +135,7 @@ public class ClusterCreator {
 					}
 				}
 				clusters.add(i, methodsIndices);
-				System.out.println("Cluster # " + i + " has methods: " + clusters.get(i));
+				//System.out.println("Cluster # " + i + " has methods: " + clusters.get(i));
 			}
 		    
 		    return;		

@@ -21,7 +21,7 @@ public class MethodTagsCreation {
 	private List<List<String>> methodsTagsOriginal;
 	private List<List<String>> methodsTagsLowerCase;
 	private List<List<String>> methodsTagsStemmed;
-	private List<List<String>> methodsTagsConverted;
+	private List<List<String>> methodsTagsConverted;							//Keywords/tags after synonyms removal
 	//List<List<String>> methodsTagsStmdSyn = new ArrayList<List<String>>();
 	//String inputFile = System.getProperty("user.dir")+"/SEWordSim-r1.db";   //This path is useful when db is in SOM folder
 	String inputFile = "D:/CRP/SEWordSimDB/SEWordSim-r1.db";
@@ -42,8 +42,8 @@ public class MethodTagsCreation {
 	 * Creates ArrayList of recommended methods with their tags 
 	 */
 	public void populateMethodTagsList(){
-		populateTenthList();
-		//populateListfromCSV();
+		//populateTenthList();
+		populateListfromCSV();
 		 //stemMethodsTags();
 		convertInLowecase();
 		sortArrayList(methodsTagsLowerCase);
@@ -64,10 +64,24 @@ public class MethodTagsCreation {
 	private void convertInLowecase(){
 		
 		methodsTagsLowerCase  = new ArrayList<List<String>>();
+		final int arrSize = 20;										//Max number of  keywords of each recommended method/project
 		
-		for (int i=0; i<methodsTagsOriginal.size(); i++){
-			String []arr =methodsTagsOriginal.get(i).toArray(new String[methodsTagsOriginal.get(i).size()]);
+		String[] arr;
+		
+		//Code to get all keywords of recommended methods/keywords
+		/*for (int i=0; i<methodsTagsOriginal.size(); i++){
+			arr =methodsTagsOriginal.get(i).toArray(new String[methodsTagsOriginal.get(i).size()]);
 			methodsTagsLowerCase.add(Arrays.asList(arr));
+		}*/
+		
+		//Code to get 'arrSize' keywords of recommended methods/keywords
+		for (int i=0; i<methodsTagsOriginal.size(); i++){
+			arr =methodsTagsOriginal.get(i).toArray(new String[methodsTagsOriginal.get(i).size()]);
+			String[] arr20 = new String[arrSize];
+			for (int j=0; j<arrSize && j<arr.length; j++){
+				arr20[j] = arr[j];				
+			}
+			methodsTagsLowerCase.add(Arrays.asList(arr20));
 		}
 	
 		for (int i=0; i<methodsTagsLowerCase.size();  i++){
@@ -78,73 +92,6 @@ public class MethodTagsCreation {
 		
 	}
 	
-	/**
-	 * Stems method tags
-	 * Handles synonyms
-	 * Stores the method tags in a new arraylist methodsTagsStemmed
-	 */
-	private void stemMethodsTags(){
-				
-		for (int i=0; i<methodsTagsOriginal.size(); i++){
-			List<String> tags= methodsTagsOriginal.get(i);
-			List<String> stemmedTags = new ArrayList<String>();
-			for(int j=0; j<tags.size(); j++){
-				String tag =tags.get(j).toLowerCase() ;
-				stemmedTags.add(facade.stemWord(tag));					
-			}
-			methodsTagsStemmed.add(stemmedTags);
-			
-		}
-		System.out.println("\nStemmed Methods Tags with synonyms");
-		for(int i=0; i<methodsTagsStemmed.size(); i++){
-			System.out.println(methodsTagsStemmed.get(i));
-		}
-		/*handleSynonyms();
-		System.out.println("\nStemmed Methods Tags with synonyms removed");
-		for(int i=0; i<methodsTagsStemmed.size(); i++){
-			System.out.println(methodsTagsStemmed.get(i));
-		}*/
-	}
-	
-	
-	/**
-	 * Handles synonyms of methodsTagsStemmed arraylist with the help of SEWordSim db
-	 */
-	private void handleSynonyms (){	
-		
-		double similarityScore;
-		
-		for (int i=0; i<methodsTagsStemmed.size(); i++){
-			List<String> tags1 = methodsTagsStemmed.get(i);
-			//System.out.println("Methd for comparison\n" + tags1);
-			for (int j=0; j<tags1.size(); j++){
-				String tag = tags1.get(j);
-				if(facade.isInDatabase(tag)){
-					//System.out.println(tag+ " is in DB");
-					for (int k=i+1; k<methodsTagsStemmed.size(); k++){
-						List<String> tags2 = methodsTagsStemmed.get(k);
-						//System.out.println("Method "+ k + " for syn removal\n" + tags2);
-						for(int l=0; l<tags2.size(); l++){
-							//System.out.println("Tag before replace: " + tags2.get(l));
-							if (!tag.equals(tags2.get(l))){
-								similarityScore = facade.computeSimilarity(tag, tags2.get(l));
-								if (similarityScore>=MIN_SIMILARITY_SCORE){
-									System.out.println("\nIn method: " + i + " & method: " +k);
-									System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) + ", Sim. Score: " + similarityScore);
-									tags2.set(l, tag);	
-									//System.out.println("Tag after replace: " + tags2.get(l));
-									break;
-								}
-							}
-						}
-						methodsTagsStemmed.set(k, tags2);
-						//System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsStemmed.get(k));
-					}
-				}
-			}
-		}
-		
-	}
 	
 	/**
 	 * Handling of synonyms with WordNet API - WS4J
@@ -596,5 +543,74 @@ public class MethodTagsCreation {
 		methodsTagsOriginal = reader.populateArrayList();
 		
 	}
+	
+	/**
+	 * Stems method tags
+	 * Handles synonyms
+	 * Stores the method tags in a new arraylist methodsTagsStemmed
+	 */
+	private void stemMethodsTags(){
+				
+		for (int i=0; i<methodsTagsOriginal.size(); i++){
+			List<String> tags= methodsTagsOriginal.get(i);
+			List<String> stemmedTags = new ArrayList<String>();
+			for(int j=0; j<tags.size(); j++){
+				String tag =tags.get(j).toLowerCase() ;
+				stemmedTags.add(facade.stemWord(tag));					
+			}
+			methodsTagsStemmed.add(stemmedTags);
+			
+		}
+		System.out.println("\nStemmed Methods Tags with synonyms");
+		for(int i=0; i<methodsTagsStemmed.size(); i++){
+			System.out.println(methodsTagsStemmed.get(i));
+		}
+		/*handleSynonyms();
+		System.out.println("\nStemmed Methods Tags with synonyms removed");
+		for(int i=0; i<methodsTagsStemmed.size(); i++){
+			System.out.println(methodsTagsStemmed.get(i));
+		}*/
+	}
+	
+	
+	/**
+	 * Handles synonyms of methodsTagsStemmed arraylist with the help of SEWordSim db
+	 */
+	private void handleSynonyms (){	
+		
+		double similarityScore;
+		
+		for (int i=0; i<methodsTagsStemmed.size(); i++){
+			List<String> tags1 = methodsTagsStemmed.get(i);
+			//System.out.println("Methd for comparison\n" + tags1);
+			for (int j=0; j<tags1.size(); j++){
+				String tag = tags1.get(j);
+				if(facade.isInDatabase(tag)){
+					//System.out.println(tag+ " is in DB");
+					for (int k=i+1; k<methodsTagsStemmed.size(); k++){
+						List<String> tags2 = methodsTagsStemmed.get(k);
+						//System.out.println("Method "+ k + " for syn removal\n" + tags2);
+						for(int l=0; l<tags2.size(); l++){
+							//System.out.println("Tag before replace: " + tags2.get(l));
+							if (!tag.equals(tags2.get(l))){
+								similarityScore = facade.computeSimilarity(tag, tags2.get(l));
+								if (similarityScore>=MIN_SIMILARITY_SCORE){
+									System.out.println("\nIn method: " + i + " & method: " +k);
+									System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) + ", Sim. Score: " + similarityScore);
+									tags2.set(l, tag);	
+									//System.out.println("Tag after replace: " + tags2.get(l));
+									break;
+								}
+							}
+						}
+						methodsTagsStemmed.set(k, tags2);
+						//System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsStemmed.get(k));
+					}
+				}
+			}
+		}
+		
+	}
+	
 
 }

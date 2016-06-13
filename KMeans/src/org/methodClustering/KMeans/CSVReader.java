@@ -1,3 +1,4 @@
+package org.methodClustering.KMeans;
 
 
 import java.io.BufferedReader;
@@ -24,7 +25,7 @@ public class CSVReader {
 	 */
 	public void readCSV() {
 
-		String csvFile = "project_domain_keywords_3.csv";
+		String csvFile = "project_domain_keywords_3_10-keywords.csv";
 		projects = new ArrayList<List<String>>();
 		BufferedReader br = null;
 		String line = "";

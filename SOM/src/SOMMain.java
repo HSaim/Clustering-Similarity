@@ -47,7 +47,7 @@ public class SOMMain {
 		 
 		 
 		 //Exact matching code
-		 methodsTags = mTag.getLowerCaseMethodsTags();
+		methodsTags = mTag.getLowerCaseMethodsTags();
 		//Exact matching code - Ends
 		 
 		 //Semantic Matching code
@@ -90,8 +90,8 @@ public class SOMMain {
 		 System.out.println("Feature Vector Size: " + featureVector.size() );
 		 System.out.println("Total epochs: " + clusters.getIterations());
 		 System.out.println("Final value of learning factor: " + clusters.getAlpha());
-		 System.out.println("Final neurons");
-		 clusters.displayNeurons();
+		 //System.out.println("Final neurons");
+		 //clusters.displayNeurons();
 		 System.out.println("\nFinal clusters:");
 		 clusters.displayClusters();
 			 

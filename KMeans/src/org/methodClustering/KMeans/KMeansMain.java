@@ -56,8 +56,20 @@ public class KMeansMain {
     	
     	mTag.populateMethodTagsList();
 		//methodsTags = mTag.getStemmedMethodsTags();
-		 methodsTags = mTag.getOriginalMethodsTags();
-		// methodsTags = mTag.getConvertedMethodsTags();
+		
+		
+		//Exact matching code
+		 methodsTags = mTag.getLowerCaseMethodsTags();
+		//Exact matching code - Ends
+		 
+		 //Semantic Matching code using WordNet
+		 /*mTag.replaceSimilarTags();		 
+		 methodsTags = mTag.getConvertedMethodsTags();
+		 System.out.println("\n\tUpdated Methods Tags after removal of morphological words");
+		 System.out.println("------------------------------------------------------------------------------");
+		 mTag.displayMethods(methodsTags);*/
+		//Semantic Matching code - Ends
+		 
 		jD = new JaccardDifference(methodsTags);
 		centroidList = jD.getCentroidList();
 		totalClusters = centroidList.size();

@@ -55,13 +55,16 @@ public class Cluster {
 	
 	public void plotCluster(){
 		System.out.println("Cluster: " + id);
-		System.out.println("Centroid: " + centroid);
+		//System.out.println("Centroid: " + centroid);
 		System.out.println("Methods:");
 		/*for (List<Double>method: methods){
 			System.out.println(method);
 		}*/
-		for(int i=0; i<methods.size(); i++){
+		/*for(int i=0; i<methods.size(); i++){
 			System.out.println(methodsIDs.get(i)+ ": " + methods.get(i));
+		}*/
+		for(int i=0; i<methods.size(); i++){
+			System.out.print(methodsIDs.get(i)+ ", ");
 		}
 		System.out.println("");
 	}
