@@ -1,9 +1,9 @@
 import java.io.File;
 
 import edu.smu.tspell.wordnet.Synset;
-import edu.smu.tspell.wordnet.SynsetType;
+//import edu.smu.tspell.wordnet.SynsetType;
 import edu.smu.tspell.wordnet.WordNetDatabase;
-import edu.smu.tspell.wordnet.impl.file.Morphology;
+//import edu.smu.tspell.wordnet.impl.file.Morphology;
 
 /**
  * 
