@@ -49,7 +49,7 @@ public class KMeansMain {
 	    	KMeansMain kmeans = new KMeansMain();
 	    	kmeans.init();
 	    	kmeans.calculate();
-	    }
+	 }
 	 
 	//Initializes the process
     private void init() {
@@ -59,15 +59,15 @@ public class KMeansMain {
 		
 		
 		//Exact matching code
-		 methodsTags = mTag.getLowerCaseMethodsTags();
+//		 methodsTags = mTag.getLowerCaseMethodsTags();
 		//Exact matching code - Ends
 		 
 		 //Semantic Matching code using WordNet
-		 /*mTag.replaceSimilarTags();		 
+		 mTag.replaceSimilarTags();		 
 		 methodsTags = mTag.getConvertedMethodsTags();
 		 System.out.println("\n\tUpdated Methods Tags after removal of morphological words");
 		 System.out.println("------------------------------------------------------------------------------");
-		 mTag.displayMethods(methodsTags);*/
+		 mTag.displayMethods(methodsTags);
 		//Semantic Matching code - Ends
 		 
 		jD = new JaccardDifference(methodsTags);

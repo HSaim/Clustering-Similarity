@@ -29,14 +29,14 @@ public class MethodTagsCreation {
 	//String inputFile = System.getProperty("user.dir")+"/SEWordSim-r1.db";   //This path is useful when db is in SOM folder
 	String inputFile = "D:/CRP/SEWordSimDB/SEWordSim-r1.db";
 	WordSimFinder facade = new WordSimFinder(inputFile);
-	SimilarityCalculation sc = new SimilarityCalculation();	
+//	SimilarityCalculation sc = new SimilarityCalculation();	
 	private CSVReader reader; 
 	
 	public MethodTagsCreation(){
 		 methodsTagsOriginal = new ArrayList<List<String>>();
 		 methodsTagsStemmed = new ArrayList<List<String>>();
 		 facade = new WordSimFinder(inputFile);
-		 sc = new SimilarityCalculation();
+//		 sc = new SimilarityCalculation();
 		 reader  = new CSVReader();
 		
 	}
@@ -107,6 +107,7 @@ public class MethodTagsCreation {
 			}	
 		}
 	}
+
 	
 	/**
 	 * Handling of synonyms with WordNet API - WS4J
@@ -121,7 +122,7 @@ public class MethodTagsCreation {
 		}
 		 
 
-			double similarityScore;
+		InflectionalMorphology morph = new InflectionalMorphology();
 			
 			for (int i=0; i<methodsTagsConverted.size(); i++){
 				List<String> tags1 = methodsTagsConverted.get(i);
@@ -132,20 +133,21 @@ public class MethodTagsCreation {
 							List<String> tags2 = methodsTagsConverted.get(k);
 							//System.out.println("Method "+ k + " for syn removal\n" + tags2);
 							for(int l=0; l<tags2.size(); l++){
-								//System.out.println("Tag before replace: " + tags2.get(l));
+								System.out.println("Tag before replace: " + tags2.get(l));
 								if (!tag.equals(tags2.get(l))){
-									similarityScore = sc.computeSimilarity(tag, tags2.get(l));
-									if (similarityScore>=MIN_SIMILARITY_SCORE){
+									System.out.println(morph.isSynonym(tag, tags2.get(l)));
+									System.out.println(tag+" "+tags2.get(l));
+									if (morph.isSynonym(tag, tags2.get(l))){
 										System.out.println("\nIn method: " + i + " & method: " +k);
-										System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) + ", Sim. Score: " + similarityScore);
+										System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) );
 										tags2.set(l, tag);	
-										//System.out.println("Tag after replace: " + tags2.get(l));
+										System.out.println("Tag after replace: " + tags2.get(l));
 										break;
 									}
 								}
 							}
 							methodsTagsConverted.set(k, tags2);
-							//System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsStemmed.get(k));
+							System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsConverted.get(k));
 						}
 					//}
 				}
