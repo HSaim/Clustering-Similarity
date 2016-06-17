@@ -47,8 +47,8 @@ public class MethodTagsCreation {
 	 */
 	public void populateMethodTagsList(){
 		
-		//populateTenthList();
-		populateListfromCSV();
+		populateTenthList();
+		//populateListfromCSV();
 		 //stemMethodsTags();
 		convertInLowecase();
 		sortArrayList(methodsTagsLowerCase);
@@ -81,7 +81,7 @@ public class MethodTagsCreation {
 	private void convertInLowecase(){
 		
 		methodsTagsLowerCase  = new ArrayList<List<String>>();
-		final int arrSize = 20;											//Max number of  keywords of each recommended method/project 
+		final int arrSize = 10;											//Max number of  keywords of each recommended method/project 
 		
 		String[] arr;
 		
@@ -99,10 +99,12 @@ public class MethodTagsCreation {
 				arr20[j] = arr[j];				
 			}
 			methodsTagsLowerCase.add(Arrays.asList(arr20));
+			System.out.println(methodsTagsLowerCase.get(i));
 		}
 	
 		for (int i=0; i<methodsTagsLowerCase.size();  i++){
 			for(int j=0; j < methodsTagsLowerCase.get(i).size(); j++) {
+//				System.out.print(methodsTagsLowerCase.get(i).get(j));
 				methodsTagsLowerCase.get(i).set(j, methodsTagsLowerCase.get(i).get(j).toLowerCase()); 
 			}	
 		}
@@ -129,25 +131,25 @@ public class MethodTagsCreation {
 				//System.out.println("Methd for comparison\n" + tags1);
 				for (int j=0; j<tags1.size(); j++){
 					String tag = tags1.get(j);
-						for (int k=i+1; k<methodsTagsConverted.size(); k++){
+						for (int k=i; k<methodsTagsConverted.size(); k++){
 							List<String> tags2 = methodsTagsConverted.get(k);
 							//System.out.println("Method "+ k + " for syn removal\n" + tags2);
 							for(int l=0; l<tags2.size(); l++){
-								System.out.println("Tag before replace: " + tags2.get(l));
+//								System.out.println("Tag before replace: " + tags2.get(l));
 								if (!tag.equals(tags2.get(l))){
-									System.out.println(morph.isSynonym(tag, tags2.get(l)));
-									System.out.println(tag+" "+tags2.get(l));
+//									System.out.println(morph.isSynonym(tag, tags2.get(l)));
+//									System.out.println(tag+" "+tags2.get(l));
 									if (morph.isSynonym(tag, tags2.get(l))){
-										System.out.println("\nIn method: " + i + " & method: " +k);
-										System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) );
+//										System.out.println("\nIn method: " + i + " & method: " +k);
+//										System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) );
 										tags2.set(l, tag);	
-										System.out.println("Tag after replace: " + tags2.get(l));
+//										System.out.println("Tag after replace: " + tags2.get(l));
 										break;
 									}
 								}
 							}
 							methodsTagsConverted.set(k, tags2);
-							System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsConverted.get(k));
+//							System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsConverted.get(k));
 						}
 					//}
 				}

@@ -7,7 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 /**
  * 
  * @author Habiba Saim
@@ -19,24 +22,28 @@ public class CSVReader {
 	String[] project;									//Line by line storage of CSV file
 	List<List<String>> projects;						//All project numbers and their tags, extracted from project[]
 	List<List<String>> methodsTags;						//Final 2D Arraylist(containing tags of each method/project in each row), to be processed for clustering
-	
+	public static Map<Integer,String> projectDict = new HashMap<Integer,String>();
 	/**
 	 * Reads CSV file and stores in 'projects' arraylist
 	 */
 	public void readCSV() {
 
-		String csvFile = "project_domain_keyword(ordered by frequency of words).csv";
+		String csvFile = "test_30_project_domain_keywords(RPG,Board,Card).csv";
 		projects = new ArrayList<List<String>>();
 		BufferedReader br = null;
 		String line = "";
-		String csvSplitBy = ";";		
+		String csvSplitBy = ";";
 		
+
 		
 		try {
-
+			int y;
+			int x = 0;
+			int ind = 0;
+			String[] projectName;
+			
 			br = new BufferedReader(new FileReader(csvFile));
 			while ((line = br.readLine()) != null) {
-
 			        // use comma as separator
 				project = line.split(csvSplitBy);
 				//x = C(project[1]);
@@ -46,6 +53,14 @@ public class CSVReader {
 				projects.add(Arrays.asList(project[1], project[4]));
 //				System.out.println("Project [code= " + project[1] 
 //	                                 + " , tag=" + project[4] + "]");
+			
+				y = Integer.parseInt(project[1]);
+				if(x!=y){
+					x=y;
+					projectName = (project[2]).split("\\\\");
+					projectDict.put(ind, projectName[3]);
+					ind++;
+					}
 
 			}
 
@@ -76,7 +91,7 @@ public class CSVReader {
 	 public List<List<String>> populateArrayList(){
 		 
 		 methodsTags = new ArrayList<List<String>>();
-		 int x=1;
+		 int x=Integer.valueOf(projects.get(0).get(0));
 		 int y;
 		 List<String> methodTags = new ArrayList<String>();
 		 /*for (int i=0; i<projects.size(); i++){
@@ -94,12 +109,16 @@ public class CSVReader {
 				 methodTags.add(projects.get(i).get(1));
 			 }
 			 else{
-				 x++;
+				 x=y;
+				 //duplication removal
+				 methodTags = new ArrayList<String>(new LinkedHashSet<String>(methodTags));
+				 
 				 methodsTags.add(methodTags);
 				 methodTags = new ArrayList<String>();
 				 methodTags.add(projects.get(i).get(1));
 			 }
 		 }
+		 methodTags = new ArrayList<String>(new LinkedHashSet<String>(methodTags));
 		 methodsTags.add(methodTags);
 		 System.out.println("Methods and their tags");
 		 System.out.println("===========================");

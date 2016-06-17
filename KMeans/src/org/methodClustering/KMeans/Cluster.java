@@ -2,6 +2,7 @@ package org.methodClustering.KMeans;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /*
  * @author Habiba Saim
@@ -57,15 +58,18 @@ public class Cluster {
 		System.out.println("Cluster: " + id);
 		//System.out.println("Centroid: " + centroid);
 		System.out.println("Methods:");
-		/*for (List<Double>method: methods){
-			System.out.println(method);
-		}*/
+//		for (List<Double>method: methods){
+//			System.out.print(method);
+//		}
 		/*for(int i=0; i<methods.size(); i++){
 			System.out.println(methodsIDs.get(i)+ ": " + methods.get(i));
 		}*/
+		Map<Integer,String> projectDict = CSVReader.projectDict;
 		for(int i=0; i<methods.size(); i++){
-			System.out.print(methodsIDs.get(i)+ ", ");
+//		System.out.print(projectDict.get(methodsIDs.get(i))+ ":"+ methodsIDs.get(i)+ " , ");
+		System.out.print(methodsIDs.get(i)+ ", ");
 		}
 		System.out.println("");
 	}
+
 }
