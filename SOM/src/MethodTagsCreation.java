@@ -64,7 +64,7 @@ public class MethodTagsCreation {
 	private void convertInLowecase(){
 		
 		methodsTagsLowerCase  = new ArrayList<List<String>>();
-		final int arrSize = 20;										//Max number of  keywords of each recommended method/project
+		final int arrSize = 10;										//Max number of  keywords of each recommended method/project
 		
 		String[] arr;
 		
@@ -77,11 +77,11 @@ public class MethodTagsCreation {
 		//Code to get 'arrSize' keywords of recommended methods/keywords
 		for (int i=0; i<methodsTagsOriginal.size(); i++){
 			arr =methodsTagsOriginal.get(i).toArray(new String[methodsTagsOriginal.get(i).size()]);
-			String[] arr20 = new String[arrSize];
+			List<String> arr20 = new ArrayList<String>();
 			for (int j=0; j<arrSize && j<arr.length; j++){
-				arr20[j] = arr[j];				
+				arr20.add(arr[j]);				
 			}
-			methodsTagsLowerCase.add(Arrays.asList(arr20));
+			methodsTagsLowerCase.add(arr20);
 		}
 	
 		for (int i=0; i<methodsTagsLowerCase.size();  i++){
@@ -170,7 +170,7 @@ public class MethodTagsCreation {
 	public void displayMethods(List<List<String>> methods){		
 		
 		for(int i=0; i<methods.size(); i++){
-			System.out.println(methods.get(i));
+			System.out.println("Node-" + i +":" +methods.get(i));
 		}
 		
 	}

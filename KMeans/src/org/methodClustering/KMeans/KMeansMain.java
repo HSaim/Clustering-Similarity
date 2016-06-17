@@ -28,6 +28,7 @@ public class KMeansMain {
 	MethodTagsCreation mTag;
 	//List<List<Float>> finalCentorids;
 	JaccardDifference jD;
+	int iterations;											//Total iterations done in learning
 	//DomainIdentification identify;
 	
 	public KMeansMain(){		
@@ -49,12 +50,16 @@ public class KMeansMain {
 	    	KMeansMain kmeans = new KMeansMain();
 	    	kmeans.init();
 	    	kmeans.calculate();
+	    	System.out.println("\n\tFinal output");
+	    	System.out.println("-----------------------------");
+	    	kmeans.displayResults();
 	    }
 	 
 	//Initializes the process
     private void init() {
     	
     	mTag.populateMethodTagsList();
+    	iterations = 0;
 		//methodsTags = mTag.getStemmedMethodsTags();
 		
 		
@@ -127,7 +132,7 @@ public class KMeansMain {
   //The process to calculate K Means, with iterating method.
     private void calculate() {
         boolean finish = false;
-        int iteration = 0;
+        
         
         // Add in new data, one at a time, recalculating centroids with each new one. 
         while(!finish) {
@@ -143,7 +148,7 @@ public class KMeansMain {
             //Calculate new centroids.
         	calculateCentroids();
         	
-        	iteration++;
+        	iterations++;
         	
         	//Get new centroids after updation of clusters' components
         	List<List<Double>> updatedCentroids = getCentroids();
@@ -157,12 +162,13 @@ public class KMeansMain {
         	}
         	
         	System.out.println("#################");
-        	System.out.println("Iteration: " + iteration);
+        	System.out.println("Iteration: " + iterations);
         	System.out.println("Centroid distances: " + distance);
         	plotClusters();
         	        	
         	if(distance == 0) {
-        		finish = true;
+        		finish = true;        		
+        		
         	}
         }
     }
@@ -238,6 +244,14 @@ public class KMeansMain {
     		
     	}
     }
+    
+    private void displayResults(){
+    	System.out.println("Feature Vector Size: " + featureVector.size());
+    	System.out.println("Total iterations: " + iterations);
+    	System.out.println("Final Clusters");
+    	plotClusters();
+    }
+    
     
    
 }

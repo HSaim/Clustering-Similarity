@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 /**
  * 
@@ -25,7 +26,7 @@ public class CSVReader {
 	 */
 	public void readCSV() {
 
-		String csvFile = "project_domain_keywords_3_10-keywords.csv";
+		String csvFile = "project_domain_keyword(ordered by frequency of words).csv";
 		projects = new ArrayList<List<String>>();
 		BufferedReader br = null;
 		String line = "";
@@ -95,12 +96,21 @@ public class CSVReader {
 			 }
 			 else{
 				 x++;
+				 
+				//Keywords Duplication removal from Methods ArrayList
+				 methodTags = new ArrayList<String>(new LinkedHashSet<String>(methodTags));
+				 
 				 methodsTags.add(methodTags);
 				 methodTags = new ArrayList<String>();
 				 methodTags.add(projects.get(i).get(1));
 			 }
 		 }
+		//Keywords Duplication removal from Methods ArrayList
+		 methodTags = new ArrayList<String>(new LinkedHashSet<String>(methodTags));
+		 
 		 methodsTags.add(methodTags);
+		 
+		
 		 System.out.println("Methods and their tags");
 		 System.out.println("===========================");
 		 for (int i=0; i<methodsTags.size(); i++){

@@ -64,7 +64,7 @@ public class Cluster {
 			System.out.println(methodsIDs.get(i)+ ": " + methods.get(i));
 		}*/
 		for(int i=0; i<methods.size(); i++){
-			System.out.print(methodsIDs.get(i)+ ", ");
+			System.out.print(methodsIDs.get(i)+(i < methods.size()-1 ? ", " : ""));			
 		}
 		System.out.println("");
 	}

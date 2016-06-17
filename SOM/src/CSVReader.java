@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 /**
  * 
@@ -24,7 +25,7 @@ public class CSVReader {
 	 */
 	public void readCSV() {
 
-		String csvFile = "project_domain_keywords_3.csv";
+		String csvFile = "project_domain_keyword(ordered by frequency of words).csv";
 		projects = new ArrayList<List<String>>();
 		BufferedReader br = null;
 		String line = "";
@@ -36,7 +37,7 @@ public class CSVReader {
 			br = new BufferedReader(new FileReader(csvFile));
 			while ((line = br.readLine()) != null) {
 
-			        // use comma as separator
+			    // use semi cololn as separator
 				project = line.split(csvSplitBy);
 				//x = C(project[1]);
 				//methodsTags.add( x, project[4] );
@@ -94,12 +95,21 @@ public class CSVReader {
 			 }
 			 else{
 				 x++;
+				 
+				//Keywords Duplication removal from Methods ArrayList
+				 methodTags = new ArrayList<String>(new LinkedHashSet<String>(methodTags));
+				 
 				 methodsTags.add(methodTags);
 				 methodTags = new ArrayList<String>();
 				 methodTags.add(projects.get(i).get(1));
 			 }
 		 }
+		 
+		//Keywords Duplication removal from Methods ArrayList
+		 methodTags = new ArrayList<String>(new LinkedHashSet<String>(methodTags));
+		 
 		 methodsTags.add(methodTags);
+		 
 		 System.out.println("Methods and their tags");
 		 System.out.println("===========================");
 		 for (int i=0; i<methodsTags.size(); i++){
