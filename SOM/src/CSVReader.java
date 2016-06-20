@@ -25,7 +25,7 @@ public class CSVReader {
 	 */
 	public void readCSV() {
 
-		String csvFile = "project_domain_keyword(ordered by frequency of words).csv";
+		String csvFile = "project_domain_keywords_latest_Cat_10_19_20.csv";
 		projects = new ArrayList<List<String>>();
 		BufferedReader br = null;
 		String line = "";
@@ -42,8 +42,8 @@ public class CSVReader {
 				//x = C(project[1]);
 				//methodsTags.add( x, project[4] );
 				project[1] = project[1].replace("\"","");					//project code
-				project[4] = project[4].replace("\"","");					//project tag
-				projects.add(Arrays.asList(project[1], project[4]));
+				project[3] = project[3].replace("\"","");					//project tag
+				projects.add(Arrays.asList(project[1], project[3]));
 //				System.out.println("Project [code= " + project[1] 
 //	                                 + " , tag=" + project[4] + "]");
 
@@ -76,7 +76,7 @@ public class CSVReader {
 	 public List<List<String>> populateArrayList(){
 		 
 		 methodsTags = new ArrayList<List<String>>();
-		 int x=1;
+		 int x = Integer.valueOf(projects.get(0).get(0));
 		 int y;
 		 List<String> methodTags = new ArrayList<String>();
 		 /*for (int i=0; i<projects.size(); i++){
@@ -94,7 +94,7 @@ public class CSVReader {
 				 methodTags.add(projects.get(i).get(1));
 			 }
 			 else{
-				 x++;
+				 x=y;
 				 
 				//Keywords Duplication removal from Methods ArrayList
 				 methodTags = new ArrayList<String>(new LinkedHashSet<String>(methodTags));

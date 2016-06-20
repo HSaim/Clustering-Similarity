@@ -94,6 +94,7 @@ public class SOMMain {
 		 //clusters.displayNeurons();
 		 System.out.println("\nFinal clusters:");
 		 clusters.displayClusters();
+		 ClusterValidation.runClusterValidation(clusters.getClusters(), methodsTags);
 			 
 		 
 		 /********* Silhouette Index Calculation**********/
@@ -116,6 +117,6 @@ public class SOMMain {
 		public static void main (String args[]) {	 
 			 SOMMain SOM = new SOMMain();
 			 SOM.init();
-			 SOM.calculate();			 
+			 SOM.calculate();
 		}	
 	}

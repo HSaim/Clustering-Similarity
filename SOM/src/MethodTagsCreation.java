@@ -26,14 +26,14 @@ public class MethodTagsCreation {
 	//String inputFile = System.getProperty("user.dir")+"/SEWordSim-r1.db";   //This path is useful when db is in SOM folder
 	String inputFile = "D:/CRP/SEWordSimDB/SEWordSim-r1.db";
 	WordSimFinder facade;
-	SimilarityCalculation sc;	
+//	SimilarityCalculation sc;	
 	private CSVReader reader;
 	
 	public MethodTagsCreation(){
 		 methodsTagsOriginal = new ArrayList<List<String>>();
 		 methodsTagsStemmed = new ArrayList<List<String>>();
 		 facade = new WordSimFinder(inputFile);
-		 sc = new SimilarityCalculation();
+//		 sc = new SimilarityCalculation();
 		 reader  = new CSVReader();
 		
 	}
@@ -119,10 +119,10 @@ public class MethodTagsCreation {
 						for(int l=0; l<tags2.size(); l++){
 							//System.out.println("Tag before replace: " + tags2.get(l));
 							if (!tag.equals(tags2.get(l))){
-								similarityScore = sc.computeSimilarity(tag, tags2.get(l));
-								if (similarityScore>=MIN_SIMILARITY_SCORE){
+//								similarityScore = sc.computeSimilarity(tag, tags2.get(l));
+								if (true){
 									System.out.println("\nIn method: " + i + " & method: " +k);
-									System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) + ", Sim. Score: " + similarityScore);
+									System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) + ", Sim. Score: ");
 									tags2.set(l, tag);	
 									//System.out.println("Tag after replace: " + tags2.get(l));
 									break;
