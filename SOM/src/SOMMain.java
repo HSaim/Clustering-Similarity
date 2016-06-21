@@ -47,15 +47,15 @@ public class SOMMain {
 		 
 		 
 		 //Exact matching code
-		methodsTags = mTag.getLowerCaseMethodsTags();
+		//methodsTags = mTag.getLowerCaseMethodsTags();
 		//Exact matching code - Ends
 		 
 		 //Semantic Matching code
-		 /*mTag.replaceSimilarTags();		 
+		 mTag.replaceSimilarTags();		 
 		 methodsTags = mTag.getConvertedMethodsTags();
-		 System.out.println("\n\tUpdated Methods Tags after removal of morphological words");
+		 System.out.println("\n\tUpdated Methods Tags after removal of synonyms");
 		 System.out.println("------------------------------------------------------------------------------");
-		 mTag.displayMethods(methodsTags);*/
+		 mTag.displayMethods(methodsTags);
 		//Semantic Matching code - Ends
 		 
 		 JaccardDifference jD = new JaccardDifference(methodsTags);

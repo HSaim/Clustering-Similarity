@@ -77,7 +77,7 @@ public class ClusterCreator {
 	            
 	            //Find the smallest distant neuron
 	            minDistanceIndex = computeSmallestDistanceIndex();
-	           // System.out.println("Method #: " + vecNum + " Closest neuron is: " + minDistanceIndex );
+	            //System.out.println("Method #: " + vecNum + " Closest neuron is: " + minDistanceIndex );
 	            List<Float> neuron = neurons.get(minDistanceIndex);
 	            
 	            

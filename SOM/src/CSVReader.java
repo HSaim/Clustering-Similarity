@@ -25,7 +25,7 @@ public class CSVReader {
 	 */
 	public void readCSV() {
 
-		String csvFile = "project_domain_keyword(ordered by frequency of words).csv";
+		String csvFile = "wikigames_project_domain_keywords.csv";
 		projects = new ArrayList<List<String>>();
 		BufferedReader br = null;
 		String line = "";

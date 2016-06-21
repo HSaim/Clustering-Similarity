@@ -201,19 +201,8 @@ public class JaccardDifference {
     //If any of the centroids are closer to each other then select one of them as initial centroid
 	 private void removeCloseCentroidNumbers(){
 	    	
-    	List<Integer> removelList = new ArrayList<Integer>();
-    	
-/*    	for (int i=0; i<centroidList.size(); i++){
-    		for (int j=i+1; j<centroidList.size(); j++){
-    			int x=centroidList.get(j);
-    			if (!removelList.contains(x)){
-	    			if (dist[centroidList.get(i)][centroidList.get(j)]<0.9){
-	    				removelList.add(centroidList.get(j));    				
-	    			}
-    			}
-    		}
-    	}*/
-    	
+    	List<Integer> removelList = new ArrayList<Integer>();    	
+
     	System.out.println("Distance list of close neurons");
     	for (int i=0; i<centroidList.size(); i++){
     		int y=centroidList.get(i);{
@@ -238,7 +227,7 @@ public class JaccardDifference {
     		centroidList.remove(removelList.get(i));
     		//System.out.println("updated centroids after removal iteration no: " + i + "= " +  centroidList);
     	}
-    	System.out.println("updated centroids after removal:" + centroidList);
+    	//System.out.println("updated centroids after removal:" + centroidList);
 	}
  
    

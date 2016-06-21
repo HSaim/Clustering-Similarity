@@ -46,7 +46,7 @@ public class MethodTagsCreation {
 		populateListfromCSV();
 		 //stemMethodsTags();
 		convertInLowecase();
-		sortArrayList(methodsTagsLowerCase);
+		//sortArrayList(methodsTagsLowerCase);
 		//replaceSimilarTags();
 		
 		System.out.println("\n\tOriginal Methods Tags in lower case: ");
@@ -64,25 +64,25 @@ public class MethodTagsCreation {
 	private void convertInLowecase(){
 		
 		methodsTagsLowerCase  = new ArrayList<List<String>>();
-		final int arrSize = 10;										//Max number of  keywords of each recommended method/project
+		final int arrSize = 20;										//Max number of  keywords of each recommended method/project
 		
 		String[] arr;
 		
 		//Code to get all keywords of recommended methods/keywords
-		/*for (int i=0; i<methodsTagsOriginal.size(); i++){
+		for (int i=0; i<methodsTagsOriginal.size(); i++){
 			arr =methodsTagsOriginal.get(i).toArray(new String[methodsTagsOriginal.get(i).size()]);
 			methodsTagsLowerCase.add(Arrays.asList(arr));
-		}*/
+		}
 		
 		//Code to get 'arrSize' keywords of recommended methods/keywords
-		for (int i=0; i<methodsTagsOriginal.size(); i++){
+		/*for (int i=0; i<methodsTagsOriginal.size(); i++){
 			arr =methodsTagsOriginal.get(i).toArray(new String[methodsTagsOriginal.get(i).size()]);
 			List<String> arr20 = new ArrayList<String>();
 			for (int j=0; j<arrSize && j<arr.length; j++){
 				arr20.add(arr[j]);				
 			}
 			methodsTagsLowerCase.add(arr20);
-		}
+		}*/
 	
 		for (int i=0; i<methodsTagsLowerCase.size();  i++){
 			for(int j=0; j < methodsTagsLowerCase.get(i).size(); j++) {
@@ -90,13 +90,84 @@ public class MethodTagsCreation {
 			}	
 		}
 		
+		//Duplication removal from converted methods tags
+		for (int i=0; i<methodsTagsLowerCase.size(); i++){
+			for (int j=0; j<methodsTagsLowerCase.get(i).size(); j++){
+				List<String> tags;
+				tags = new ArrayList<String>(new LinkedHashSet<String>(methodsTagsLowerCase.get(i)));
+				//Sorting of methods tags
+				// Collections.sort(tags);
+				methodsTagsLowerCase.set(i, tags);
+			}
+		}
+		
+		//Sort ArrayList
+		sortArrayList(methodsTagsLowerCase);
+		
 	}
 	
 	
 	/**
 	 * Handling of synonyms with WordNet API - WS4J
 	 */
-	public void replaceSimilarTags(){
+	
+public void replaceSimilarTags(){
+		
+		methodsTagsConverted  = new ArrayList<List<String>>();
+			
+		for (int i=0; i<methodsTagsLowerCase.size(); i++){
+			String []arr =methodsTagsLowerCase.get(i).toArray(new String[methodsTagsLowerCase.get(i).size()]);
+			methodsTagsConverted.add(Arrays.asList(arr));
+		}
+		 
+
+		InflectionalMorphology morph = new InflectionalMorphology();
+			
+			for (int i=0; i<methodsTagsConverted.size(); i++){
+				List<String> tags1 = methodsTagsConverted.get(i);
+				//System.out.println("Methd for comparison\n" + tags1);
+				for (int j=0; j<tags1.size(); j++){
+					String tag = tags1.get(j);
+						for (int k=i; k<methodsTagsConverted.size(); k++){
+							List<String> tags2 = methodsTagsConverted.get(k);
+							//System.out.println("Method "+ k + " for syn removal\n" + tags2);
+							for(int l=0; l<tags2.size(); l++){
+//								System.out.println("Tag before replace: " + tags2.get(l));
+								if (!tag.equals(tags2.get(l))){
+//									System.out.println(morph.isSynonym(tag, tags2.get(l)));
+//									System.out.println(tag+" "+tags2.get(l));
+									if (morph.isSynonym(tag, tags2.get(l))){
+//										System.out.println("\nIn method: " + i + " & method: " +k);
+//										System.out.println("Original n syn tags: " + tag + " - " +tags2.get(l) );
+										tags2.set(l, tag);	
+//										System.out.println("Tag after replace: " + tags2.get(l));
+										break;
+									}
+								}
+							}
+							methodsTagsConverted.set(k, tags2);
+//							System.out.println("Updated method after synonym removal " + k + "\n" + methodsTagsConverted.get(k));
+						}
+					//}
+				}
+			}
+			
+		//Duplication removal from converted methods tags
+		for (int i=0; i<methodsTagsConverted.size(); i++){
+			for (int j=0; j<methodsTagsConverted.get(i).size(); j++){
+				List<String> tags;
+				tags = new ArrayList<String>(new LinkedHashSet<String>(methodsTagsConverted.get(i)));
+				//Sorting of methods tags
+				// Collections.sort(tags);
+				methodsTagsConverted.set(i, tags);
+			}
+		}
+			 
+		sortArrayList(methodsTagsConverted);
+			
+	}
+
+	/*public void replaceSimilarTags(){
 		
 		methodsTagsConverted  = new ArrayList<List<String>>();
 			
@@ -150,7 +221,7 @@ public class MethodTagsCreation {
 		 sortArrayList(methodsTagsConverted);
 		
 	}
-
+*/
 	public List<List<String>> getOriginalMethodsTags(){
 		return methodsTagsOriginal;
 	}
@@ -455,7 +526,7 @@ public class MethodTagsCreation {
 		  * 	*****************/
 		/***** 9th methodsTags ArrayList **********/
 		
-		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions",  "applications", "prerequisite", "fee","criteria", "tuition", "help", "Undergraduate", "Executive", "Transfer"));
 		 		 
 		 methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisite", "requirements", "financial","aid", "test", "schedule", "degree","FAQs", "Admissions", "Programs"));
 		 		 
@@ -500,7 +571,7 @@ public class MethodTagsCreation {
 		  * 	*****************/
 		/***** 10th methodsTags ArrayList **********/
 		
-		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
+		methodsTagsOriginal.add(Arrays.asList("degree", "admissions", "admission","applications", "prerequisite", "fee","criteria", "tuition", "help", "undergraduate", "executive", "transfer"));
 		 		 
 		methodsTagsOriginal.add(Arrays.asList("fee","criteria", "prerequisites", "requirements", "financial","aid", "test", "schedule", "degree","faqs", "admissions", "programs"));
 		 		 

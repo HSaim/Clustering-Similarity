@@ -90,6 +90,29 @@ public class InflectionalMorphology {
 		
 		return word;
 	}
+	
+	//Done by Shahroz
+	/**
+	 * 
+	 * @param word - to be searched in WordNet DB
+	 * @return true if word found
+	 */
+	public boolean isSynonym(String wordA, String wordB){
+		Synset[] synsets = database.getSynsets(wordA);
+		boolean flag = false;
+		if (synsets.length > 0){	
+			for (int i = 0; i < synsets.length; i++){
+				String[] wordForms = synsets[i].getWordForms();
+				for (int j = 0; j < wordForms.length; j++){
+					if(wordForms[j].equalsIgnoreCase(wordB)==true){
+						flag = true;
+						break;
+					}
+				}
+			}
+		}		
+		return flag;
+	}
 }
 
 

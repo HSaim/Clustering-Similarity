@@ -73,15 +73,15 @@ public class JaccardDifference {
 			System.out.println();
 		}
 		initializeNeuronsList();
-		/*System.out.println();
+		System.out.println();
 		for(int i=0; i<maxDist.length; i++){
 			System.out.println("max distant node of  node " +i+": "+ maxDist[i] + " value: " + maxDistVal[i]);
-		}*/
+		}
 		
 		System.out.println();
-		for(int i=0; i<minDist.length; i++){
+		/*for(int i=0; i<minDist.length; i++){
 			System.out.println("min distant node of  node " +i+": "+ minDist[i]);
-		}
+		}*/
 		
 		
 	}
@@ -165,7 +165,7 @@ public class JaccardDifference {
     	/******** Testing initialization 28-04-2016 ********/
     	/*for (int i=0; i<dist.length; i++){
     		for (int j=0; j<dist[i].length; j++){
-    			if (dist[i][j]>=0.8){
+    			if (dist[i][j]>0.83){
     				neuronsList.add(j);
     			}
     		}
@@ -200,9 +200,11 @@ public class JaccardDifference {
 		removeCloseNeuronNumbers();
 		System.out.println("Neurons list after deletion/merge of very close methods into a single cluster: " + neuronsList + "\n");
 		
+		//neuronSelectionLogic();
+		
 	}
     
-  //Add methods into neurons list which are farthest but not considered into distance calculation
+  //Add methods into neurons list which are farthest and not closed to any method but not considered into distance calculation
     private void addMissingNeurons(){
     	for (int i=0; i<totalMethods; i++){
 			int count=0;
@@ -230,7 +232,7 @@ public class JaccardDifference {
 	    			int x=neuronsList.get(j);
 	    			
 	    			if (!removelList.contains(x)){
-		    			if (dist[neuronsList.get(i)][neuronsList.get(j)]<0.9){
+		    			if (dist[neuronsList.get(i)][neuronsList.get(j)]<=0.9){
 		    				System.out.println("Dist of '" + neuronsList.get(i) + "' & '" + neuronsList.get(j) + "' : " + dist[neuronsList.get(i)][neuronsList.get(j)]);
 		    				removelList.add(neuronsList.get(j));    				
 		    			}
@@ -247,12 +249,50 @@ public class JaccardDifference {
     		neuronsList.remove(removelList.get(i));
     		//System.out.println("updated neurons after removal iteration no: " + i + "= " +  neuronsList);
     	}
-    	System.out.println("updated neurons after removal:" + neuronsList);
+    	//System.out.println("updated neurons after removal:" + neuronsList);
 	}
  
    
     public List<Integer> getNeuronsList(){
 		return neuronsList;
 	}
+    
+    //DOne on 20160621
+    private void neuronSelectionLogic(){
+    	
+    	
+    	List<Integer> candidatesList = new ArrayList<Integer>();
+    	List<Integer> removeList = new ArrayList<Integer>();
+    	
+    	System.out.println("\tTesting new logic for neuron selection");
+    	System.out.println("=========================================================================");
+    	
+    	for (int i=0; i<dist.length; i++){
+    		for (int j=0; j<dist.length; j++){
+    			if (dist[i][j]>0.83){
+    				candidatesList.add(j);
+    			}
+    		}
+    		System.out.println("Method: " +  i + "Farthest methods: " + candidatesList);
+    		for(int k=0; k<candidatesList.size()-1; k++){
+    			for(int l = k+1; l<candidatesList.size(); l++){
+    				if (dist[candidatesList.get(k)][candidatesList.get(l)]<=0.83){
+    					removeList.add(candidatesList.get(l));
+    				}
+    			}
+    		}
+    		
+    		System.out.println("Method: " +  i + "Remove List: " + removeList);
+    	}
+    	removeList = new ArrayList<Integer>(new LinkedHashSet<Integer>(removeList));
+    	candidatesList = new ArrayList<Integer>(new LinkedHashSet<Integer>(candidatesList));
+    	System.out.println("Candidates: " + candidatesList);
+    	System.out.println("Close neurons to be removed: " + removeList);
+    	for (int i=0; i<removeList.size(); i++){
+    		candidatesList.remove(removeList.get(i));
+    		//System.out.println("updated neurons after removal iteration no: " + i + "= " +  neuronsList);
+    	}
+    	System.out.println("Candidates for initial neurons: " +  candidatesList);
+    }
 	
 }
